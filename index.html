@@ -5146,13 +5146,22 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        items: orderData.items.map(item => ({
-                            name: item.name,
-                            description: `${item.size} - ${item.name}`,
-                            amount: Math.round(item.price * 100), // Convertir en centimes
-                            currency: 'eur',
-                            quantity: item.quantity
-                        })),
+                        items: orderData.items.map(item => {
+                            // Apply promo discount to each item if code is applied
+                            let itemPrice = item.price;
+                            if (orderData.promoCode && orderData.discountAmount && orderData.subtotal > 0) {
+                                const discountRatio = orderData.discountAmount / orderData.subtotal;
+                                itemPrice = itemPrice * (1 - discountRatio);
+                            }
+                            return {
+                                name: item.name,
+                                description: `${item.size} - ${item.name}`,
+                                amount: Math.round(itemPrice * 100), // Convertir en centimes
+                                currency: 'eur',
+                                quantity: item.quantity,
+                                size: item.size
+                            };
+                        }),
                         customer: {
                             email: orderData.customer.email,
                             name: `${orderData.customer.firstName} ${orderData.customer.lastName}`,
