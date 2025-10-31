@@ -5470,7 +5470,16 @@ The Evo Labs Research UG team
                 // Vider le panier
                 cart = [];
                 saveCart();
-                updateCartUI();
+                // Mettre à jour l'UI du panier si la fonction existe
+                if (typeof updateCartUI === 'function') {
+                    updateCartUI();
+                } else {
+                    // Fallback: mettre à jour le badge manuellement
+                    const cartCount = document.getElementById('cartCount');
+                    if (cartCount) {
+                        cartCount.classList.add('hidden');
+                    }
+                }
 
                 // Envoyer l'email de confirmation
                 const emailSent = await sendOrderConfirmationEmail(orderData);
