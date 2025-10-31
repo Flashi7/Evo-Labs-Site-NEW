@@ -3605,6 +3605,10 @@
                             <span id="checkoutSubtotalLabel">Sous-total</span>
                             <span id="checkoutSubtotalValue">0,00 €</span>
                         </div>
+                        <div class="summary-item" id="promoCodeSection" style="display: none;">
+                            <span id="checkoutPromoLabel">Code promo</span>
+                            <span id="checkoutPromoValue">-0,00 €</span>
+                        </div>
                         <div class="summary-item">
                             <span id="checkoutShippingLabel">Livraison</span>
                             <span id="checkoutShippingValue">Gratuite</span>
@@ -3612,6 +3616,14 @@
                         <div class="summary-item">
                             <span id="checkoutTotalLabel">Total</span>
                             <span id="checkoutTotalValue">0,00 €</span>
+                        </div>
+                        <div class="promo-code-input" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                            <label for="promoCode" style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: rgba(255,255,255,0.8);">Code promo</label>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <input type="text" id="promoCode" placeholder="Entrez un code promo" style="flex: 1; padding: 0.75rem; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: white; border-radius: 4px; font-size: 0.9rem;" onkeypress="if(event.key === 'Enter') { event.preventDefault(); applyPromoCode(); }">
+                                <button type="button" onclick="applyPromoCode()" style="padding: 0.75rem 1.5rem; background: #1D9BF0; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9rem; font-weight: 500;">Appliquer</button>
+                            </div>
+                            <div id="promoCodeMessage" style="margin-top: 0.5rem; font-size: 0.85rem;"></div>
                         </div>
                     </div>
                 </div>
@@ -5020,9 +5032,56 @@
             document.body.style.overflow = 'hidden';
         }
 
+        // Variable globale pour le code promo
+        let appliedPromoCode = null;
+        const PROMO_CODES = {
+            'TEST99': { discount: 0.99, label: 'TEST99' } // 99% de réduction
+        };
+
         function closeCheckout() {
             document.getElementById('checkoutModal').classList.remove('active');
             document.body.style.overflow = 'auto';
+            // Reset promo code when closing checkout
+            appliedPromoCode = null;
+            const promoInput = document.getElementById('promoCode');
+            const promoMessage = document.getElementById('promoCodeMessage');
+            if (promoInput) promoInput.value = '';
+            if (promoMessage) {
+                promoMessage.textContent = '';
+                promoMessage.style.color = '';
+            }
+        }
+
+        function applyPromoCode() {
+            const promoInput = document.getElementById('promoCode');
+            const promoMessage = document.getElementById('promoCodeMessage');
+            const code = promoInput.value.trim().toUpperCase();
+
+            if (!code) {
+                promoMessage.textContent = '';
+                promoMessage.style.color = '';
+                appliedPromoCode = null;
+                updateCheckoutSummary();
+                return;
+            }
+
+            if (PROMO_CODES[code]) {
+                appliedPromoCode = PROMO_CODES[code];
+                promoMessage.textContent = currentLang === 'fr'
+                    ? `✓ Code promo appliqué : ${appliedPromoCode.discount * 100}% de réduction`
+                    : `✓ Promo code applied: ${appliedPromoCode.discount * 100}% off`;
+                promoMessage.style.color = '#10b981';
+                promoInput.style.borderColor = '#10b981';
+                updateCheckoutSummary();
+            } else {
+                appliedPromoCode = null;
+                promoMessage.textContent = currentLang === 'fr'
+                    ? '❌ Code promo invalide'
+                    : '❌ Invalid promo code';
+                promoMessage.style.color = '#ef4444';
+                promoInput.style.borderColor = '#ef4444';
+                updateCheckoutSummary();
+            }
         }
 
         function updateCheckoutSummary() {
@@ -5043,17 +5102,32 @@
             // Calculate totals
             const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             const FREE_SHIPPING_THRESHOLD = 90;
-            const shippingCost = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : 5;
-            const total = subtotal + shippingCost;
+            const shippingCost = 0.60; // 60 centimes pour les tests
+
+            // Apply promo code discount (99% off)
+            let discountAmount = 0;
+            let finalSubtotal = subtotal;
+            if (appliedPromoCode) {
+                discountAmount = subtotal * appliedPromoCode.discount;
+                finalSubtotal = subtotal - discountAmount;
+            }
+
+            const total = finalSubtotal + shippingCost;
 
             subtotalValue.textContent = `${subtotal.toFixed(2).replace('.', ',')} €`;
+
+            // Show/hide promo code section
+            const promoSection = document.getElementById('promoCodeSection');
+            const promoValue = document.getElementById('checkoutPromoValue');
+            if (discountAmount > 0) {
+                promoSection.style.display = 'flex';
+                promoValue.textContent = `-${discountAmount.toFixed(2).replace('.', ',')} €`;
+            } else {
+                promoSection.style.display = 'none';
+            }
             
             // Update shipping display
-            if (shippingCost === 0) {
-                shippingValue.textContent = t.checkoutShippingValue || 'Gratuite';
-            } else {
-                shippingValue.textContent = `${shippingCost.toFixed(2).replace('.', ',')} €`;
-            }
+            shippingValue.textContent = `${shippingCost.toFixed(2).replace('.', ',')} €`;
             
             totalValue.textContent = `${total.toFixed(2).replace('.', ',')} €`;
         }
@@ -5287,11 +5361,21 @@ The Evo Labs Research UG team
                 // Générer un orderId unique une seule fois
                 const orderId = `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-                // Calculate totals with shipping
+                // Calculate totals with shipping and promo code
                 const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                const FREE_SHIPPING_THRESHOLD = 90;
-                const shippingCost = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : 5;
-                const total = subtotal + shippingCost;
+                const shippingCost = 0.60; // 60 centimes pour les tests
+                
+                // Apply promo code discount
+                let discountAmount = 0;
+                let finalSubtotal = subtotal;
+                let promoCode = null;
+                if (appliedPromoCode) {
+                    discountAmount = subtotal * appliedPromoCode.discount;
+                    finalSubtotal = subtotal - discountAmount;
+                    promoCode = Object.keys(PROMO_CODES).find(key => PROMO_CODES[key] === appliedPromoCode);
+                }
+                
+                const total = finalSubtotal + shippingCost;
 
                 const orderData = {
                     orderId: orderId,
@@ -5310,6 +5394,9 @@ The Evo Labs Research UG team
                     },
                     items: cart.map(item => ({ ...item })),
                     subtotal: subtotal,
+                    discountAmount: discountAmount,
+                    finalSubtotal: finalSubtotal,
+                    promoCode: promoCode,
                     shippingCost: shippingCost,
                     total: total,
                     orderDate: new Date().toISOString(),
