@@ -4450,11 +4450,23 @@
         
         // Fonction pour initialiser Stripe (à appeler une fois que vous avez votre clé)
         function initStripe(publicKey) {
-            if (publicKey && typeof Stripe !== 'undefined') {
+            if (!publicKey) {
+                console.error('❌ Erreur: Aucune clé publique Stripe fournie');
+                return false;
+            }
+            
+            if (typeof Stripe === 'undefined') {
+                console.error('❌ Erreur: Stripe.js n\'est pas chargé. Vérifiez que le script est inclus dans le HTML.');
+                return false;
+            }
+            
+            try {
                 stripe = Stripe(publicKey);
-                console.log('Stripe initialisé avec succès');
-            } else {
-                console.warn('Stripe non initialisé. Veuillez fournir une clé publique valide.');
+                console.log('✅ Stripe initialisé avec succès avec la clé:', publicKey.substring(0, 20) + '...');
+                return true;
+            } catch (error) {
+                console.error('❌ Erreur lors de l\'initialisation de Stripe:', error);
+                return false;
             }
         }
         
@@ -5302,9 +5314,10 @@ The Evo Labs Research UG team
 
                 // Créer la session Stripe Checkout
                 if (!stripe) {
+                    console.error('❌ Stripe non initialisé au moment du checkout');
                     throw new Error(currentLang === 'fr' 
-                        ? 'Stripe n\'est pas initialisé. Veuillez initialiser Stripe avec votre clé publique.' 
-                        : 'Stripe is not initialized. Please initialize Stripe with your public key.');
+                        ? 'Stripe n\'est pas initialisé. Vérifiez que Stripe.js est chargé et que la clé publique est correcte. Consultez la console pour plus de détails.' 
+                        : 'Stripe is not initialized. Check that Stripe.js is loaded and the public key is correct. See console for details.');
                 }
 
                 const session = await createStripeCheckoutSession(orderData);
@@ -5639,9 +5652,23 @@ The Evo Labs Research UG team
 
         // Initialize
         window.addEventListener('DOMContentLoaded', function() {
-            // Initialiser Stripe avec votre clé publique
-            // IMPORTANT: Clé en mode PRODUCTION (live)
-            initStripe('pk_live_51SErgOCV2WBfKJY9w1VSV7rdnF4CPzuH0ZZajy5IkK0hVoYLw9lzoJfj3eXZOcUq7qV4xJYWc7detXoWCXXDuRTq00yUCIot3A');
+            // Attendre que Stripe.js soit complètement chargé
+            function initializeStripeAfterLoad() {
+                if (typeof Stripe !== 'undefined') {
+                    // Initialiser Stripe avec votre clé publique
+                    // IMPORTANT: Clé en mode PRODUCTION (live)
+                    const stripeInitialized = initStripe('pk_live_51SErgOCV2WBfKJY9w1VSV7rdnF4CPzuH0ZZajy5IkK0hVoYLw9lzoJfj3eXZOcUq7qV4xJYWc7detXoWCXXDuRTq00yUCIot3A');
+                    if (!stripeInitialized) {
+                        console.error('⚠️ Attention: Stripe n\'a pas pu être initialisé. Le paiement ne fonctionnera pas.');
+                    }
+                } else {
+                    // Si Stripe n'est pas encore chargé, attendre un peu plus
+                    setTimeout(initializeStripeAfterLoad, 100);
+                }
+            }
+            
+            // Démarrer l'initialisation
+            initializeStripeAfterLoad();
             
             // Vérifier si on revient d'un paiement Stripe réussi
             const urlParams = new URLSearchParams(window.location.search);
