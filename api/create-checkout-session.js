@@ -31,34 +31,19 @@ module.exports = async (req, res) => {
         }
 
         const subtotal = items.reduce((sum, item) => sum + (item.amount * item.quantity), 0);
-        const FREE_SHIPPING_THRESHOLD = 9000;
-        const shippingAmount = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : 500;
+        const shippingAmount = 0; // Gratuit pour les tests
 
         const lineItems = items.map(item => ({
             price_data: {
                 currency: item.currency || 'eur',
                 product_data: {
                     name: item.name,
-                    description: item.description || item.name,
+                    description: item.description || `${item.name} - ${item.size || ''}`,
                 },
                 unit_amount: item.amount,
             },
             quantity: item.quantity,
         }));
-
-        if (shippingAmount > 0) {
-            lineItems.push({
-                price_data: {
-                    currency: 'eur',
-                    product_data: {
-                        name: 'Frais de livraison',
-                        description: 'Livraison standard',
-                    },
-                    unit_amount: shippingAmount,
-                },
-                quantity: 1,
-            });
-        }
 
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
@@ -80,14 +65,15 @@ module.exports = async (req, res) => {
             allow_promotion_codes: true,
         });
 
-        res.status(200).json({ 
+        res.status(200).json({
             id: session.id,
-            url: session.url 
+            url: session.url
         });
     } catch (error) {
         console.error('Erreur Stripe:', error);
-        res.status(500).json({ 
-            error: error.message || 'Erreur lors de la création de la session de paiement'
+        res.status(500).json({
+            error: error.message || 'Erreur lors de la création de la session de paiement',
+            details: process.env.NODE_ENV === 'development' ? error.stack : undefined
         });
     }
 };

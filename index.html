@@ -3609,6 +3609,20 @@
                             <span id="checkoutShippingLabel">Livraison</span>
                             <span id="checkoutShippingValue">Gratuite</span>
                         </div>
+                        <div class="summary-item" id="promoCodeSection" style="display: none;">
+                            <span id="checkoutPromoLabel">Code promo</span>
+                            <span id="checkoutPromoValue" style="color: #10b981;">-0,00 €</span>
+                        </div>
+                        <div class="form-group" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                            <label for="promoCode" id="labelPromoCode">Code promo (optionnel)</label>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <input type="text" id="promoCode" placeholder="Entrez votre code" style="flex: 1;" onkeypress="if(event.key === 'Enter') { event.preventDefault(); applyPromoCode(); }">
+                                <button type="button" class="btn" id="btnApplyPromo" onclick="applyPromoCode()" style="padding: 0.75rem 1.5rem; white-space: nowrap;">
+                                    <span id="btnPromoText">Appliquer</span>
+                                </button>
+                            </div>
+                            <div id="promoCodeMessage" style="margin-top: 0.5rem; font-size: 0.875rem;"></div>
+                        </div>
                         <div class="summary-item">
                             <span id="checkoutTotalLabel">Total</span>
                             <span id="checkoutTotalValue">0,00 €</span>
@@ -4270,6 +4284,9 @@
                 checkoutSummaryTitle: 'Récapitulatif',
                 checkoutSubtotalLabel: 'Sous-total',
                 checkoutShippingLabel: 'Livraison',
+                labelPromoCode: 'Code promo (optionnel)',
+                checkoutPromoLabel: 'Code promo',
+                btnPromoText: 'Appliquer',
                 checkoutShippingValue: 'Gratuite',
                 checkoutTotalLabel: 'Total',
                 btnCheckoutBack: 'Retour',
@@ -4426,6 +4443,9 @@
                 checkoutSummaryTitle: 'Summary',
                 checkoutSubtotalLabel: 'Subtotal',
                 checkoutShippingLabel: 'Shipping',
+                labelPromoCode: 'Promo code (optional)',
+                checkoutPromoLabel: 'Promo code',
+                btnPromoText: 'Apply',
                 checkoutShippingValue: 'Free',
                 checkoutTotalLabel: 'Total',
                 btnCheckoutBack: 'Back',
@@ -4998,9 +5018,56 @@
             document.body.style.overflow = 'hidden';
         }
 
+        // Variable globale pour le code promo
+        let appliedPromoCode = null;
+        const PROMO_CODES = {
+            'TEST99': { discount: 0.99, label: 'TEST99' } // 99% de réduction
+        };
+
         function closeCheckout() {
             document.getElementById('checkoutModal').classList.remove('active');
             document.body.style.overflow = 'auto';
+            // Reset promo code when closing checkout
+            appliedPromoCode = null;
+            const promoInput = document.getElementById('promoCode');
+            const promoMessage = document.getElementById('promoCodeMessage');
+            if (promoInput) promoInput.value = '';
+            if (promoMessage) {
+                promoMessage.textContent = '';
+                promoMessage.style.color = '';
+            }
+        }
+
+        function applyPromoCode() {
+            const promoInput = document.getElementById('promoCode');
+            const promoMessage = document.getElementById('promoCodeMessage');
+            const code = promoInput.value.trim().toUpperCase();
+            
+            if (!code) {
+                promoMessage.textContent = '';
+                promoMessage.style.color = '';
+                appliedPromoCode = null;
+                updateCheckoutSummary();
+                return;
+            }
+            
+            if (PROMO_CODES[code]) {
+                appliedPromoCode = PROMO_CODES[code];
+                promoMessage.textContent = currentLang === 'fr' 
+                    ? `✓ Code promo appliqué : ${appliedPromoCode.discount * 100}% de réduction`
+                    : `✓ Promo code applied: ${appliedPromoCode.discount * 100}% off`;
+                promoMessage.style.color = '#10b981';
+                promoInput.style.borderColor = '#10b981';
+                updateCheckoutSummary();
+            } else {
+                appliedPromoCode = null;
+                promoMessage.textContent = currentLang === 'fr'
+                    ? '❌ Code promo invalide'
+                    : '❌ Invalid promo code';
+                promoMessage.style.color = '#ef4444';
+                promoInput.style.borderColor = '#ef4444';
+                updateCheckoutSummary();
+            }
         }
 
         function updateCheckoutSummary() {
@@ -5021,8 +5088,17 @@
             // Calculate totals
             const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             const FREE_SHIPPING_THRESHOLD = 90;
-            const shippingCost = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : 5;
-            const total = subtotal + shippingCost;
+            const shippingCost = 0; // Gratuit pour les tests
+            
+            // Apply promo code discount (99% off)
+            let discountAmount = 0;
+            let finalSubtotal = subtotal;
+            if (appliedPromoCode) {
+                discountAmount = subtotal * appliedPromoCode.discount;
+                finalSubtotal = subtotal - discountAmount;
+            }
+            
+            const total = finalSubtotal + shippingCost;
 
             subtotalValue.textContent = `${subtotal.toFixed(2).replace('.', ',')} €`;
             
@@ -5031,6 +5107,16 @@
                 shippingValue.textContent = t.checkoutShippingValue || 'Gratuite';
             } else {
                 shippingValue.textContent = `${shippingCost.toFixed(2).replace('.', ',')} €`;
+            }
+            
+            // Show/hide promo code section
+            const promoSection = document.getElementById('promoCodeSection');
+            const promoValue = document.getElementById('checkoutPromoValue');
+            if (discountAmount > 0) {
+                promoSection.style.display = 'flex';
+                promoValue.textContent = `-${discountAmount.toFixed(2).replace('.', ',')} €`;
+            } else {
+                promoSection.style.display = 'none';
             }
             
             totalValue.textContent = `${total.toFixed(2).replace('.', ',')} €`;
@@ -5050,13 +5136,24 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        items: orderData.items.map(item => ({
-                            name: item.name,
-                            description: `${item.size} - ${item.name}`,
-                            amount: Math.round(item.price * 100), // Convertir en centimes
-                            currency: 'eur',
-                            quantity: item.quantity
-                        })),
+                        items: orderData.items.map(item => {
+                            // Apply promo discount to each item if code is applied
+                            let itemPrice = item.price;
+                            if (orderData.promoCode && orderData.discountAmount) {
+                                // Calculate proportional discount per item
+                                const itemSubtotal = orderData.items.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+                                const itemDiscountRatio = (item.price * item.quantity) / itemSubtotal;
+                                const itemDiscount = orderData.discountAmount * itemDiscountRatio;
+                                itemPrice = Math.max(0, item.price - (itemDiscount / item.quantity));
+                            }
+                            return {
+                                name: item.name,
+                                description: `${item.size} - ${item.name}`,
+                                amount: Math.round(itemPrice * 100), // Convertir en centimes
+                                currency: 'eur',
+                                quantity: item.quantity
+                            };
+                        }),
                         customer: {
                             email: orderData.customer.email,
                             name: `${orderData.customer.firstName} ${orderData.customer.lastName}`,
@@ -5147,7 +5244,7 @@
                     return `• ${item.quantity}x ${item.name}${item.size ? ` (${item.size})` : ''} - ${itemTotal} €`;
                 }).join('\n');
 
-                const shippingCost = orderData.total >= 90 ? 0 : 5;
+                const shippingCost = 0; // Gratuit pour les tests
                 const subtotal = orderData.total - shippingCost;
 
                 const emailContent = currentLang === 'fr' ? `
@@ -5268,8 +5365,17 @@ The Evo Labs Research UG team
                 // Calculate totals with shipping
                 const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
                 const FREE_SHIPPING_THRESHOLD = 90;
-                const shippingCost = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : 5;
-                const total = subtotal + shippingCost;
+                const shippingCost = 0; // Gratuit pour les tests
+                
+                // Apply promo code discount (99% off)
+                let discountAmount = 0;
+                let finalSubtotal = subtotal;
+                if (appliedPromoCode) {
+                    discountAmount = subtotal * appliedPromoCode.discount;
+                    finalSubtotal = subtotal - discountAmount;
+                }
+                
+                const total = finalSubtotal + shippingCost;
 
                 const orderData = {
                     orderId: orderId,
@@ -5288,8 +5394,11 @@ The Evo Labs Research UG team
                     },
                     items: cart.map(item => ({ ...item })),
                     subtotal: subtotal,
+                    discountAmount: discountAmount,
+                    finalSubtotal: finalSubtotal,
                     shippingCost: shippingCost,
                     total: total,
+                    promoCode: appliedPromoCode ? appliedPromoCode.label : null,
                     orderDate: new Date().toISOString(),
                     userEmail: currentUser ? currentUser.email : document.getElementById('checkoutEmail').value,
                     paymentStatus: 'pending'
@@ -5956,6 +6065,9 @@ The Evo Labs Research UG team
             setTextContent('checkoutSummaryTitle', t.checkoutSummaryTitle);
             setTextContent('checkoutSubtotalLabel', t.checkoutSubtotalLabel);
             setTextContent('checkoutShippingLabel', t.checkoutShippingLabel);
+            setTextContent('labelPromoCode', t.labelPromoCode);
+            setTextContent('checkoutPromoLabel', t.checkoutPromoLabel);
+            setTextContent('btnPromoText', t.btnPromoText);
             // checkoutShippingValue est mis à jour dynamiquement dans updateCheckoutSummary()
             const checkoutShippingValue = document.getElementById('checkoutShippingValue');
             if (checkoutShippingValue && !checkoutShippingValue.textContent.includes('€')) {
@@ -6040,7 +6152,7 @@ The Evo Labs Research UG team
             'Tesamorelin': {
                 fr: 'Analogue synthétique de 44 acides aminés utilisé dans les études sur les voies métaboliques et la régulation lipidique. Agoniste du récepteur GHRH avec une stabilité améliorée.',
                 en: '44 amino acid synthetic analog used in studies on metabolic pathways and lipid regulation. GHRH receptor agonist with improved stability.'
-            }
+            },
         };
 
         function openProductModal(cardElement) {
