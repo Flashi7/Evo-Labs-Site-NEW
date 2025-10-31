@@ -5471,10 +5471,19 @@ The Evo Labs Research UG team
                 cart = [];
                 saveCart();
                 // Mettre à jour l'UI du panier si la fonction existe
-                if (typeof updateCartUI === 'function') {
-                    updateCartUI();
-                } else {
-                    // Fallback: mettre à jour le badge manuellement
+                try {
+                    if (typeof updateCartUI === 'function') {
+                        updateCartUI();
+                    } else {
+                        // Fallback: mettre à jour le badge manuellement
+                        const cartCount = document.getElementById('cartCount');
+                        if (cartCount) {
+                            cartCount.classList.add('hidden');
+                        }
+                    }
+                } catch (uiError) {
+                    console.warn('Erreur lors de la mise à jour de l\'UI du panier:', uiError);
+                    // Ne pas bloquer le processus pour une erreur d'UI
                     const cartCount = document.getElementById('cartCount');
                     if (cartCount) {
                         cartCount.classList.add('hidden');
