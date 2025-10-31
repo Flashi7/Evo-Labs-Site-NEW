@@ -1,0 +1,119 @@
+🚀 GUIDE RAPIDE - DÉPLOYER EVO LABS SUR VERCEL EN 5 MINUTES
+================================================================
+
+📋 MÉTHODE LA PLUS SIMPLE (Sans ligne de commande)
+===================================================
+
+ÉTAPE 1 : CRÉER UN COMPTE VERCEL
+---------------------------------
+1. Allez sur https://vercel.com
+2. Cliquez sur "Sign Up" (Inscription)
+3. Connectez-vous avec GitHub (recommandé) ou email
+4. ✅ Compte créé !
+
+ÉTAPE 2 : TÉLÉCHARGER VOTRE PROJET
+-----------------------------------
+1. Téléchargez le dossier "evo-labs-deploy" sur votre ordinateur
+2. Vous aurez ces fichiers :
+   ✓ index.html (votre site complet - 4759 lignes)
+   ✓ vercel.json (configuration)
+   ✓ package.json (métadonnées)
+   ✓ .gitignore
+   ✓ README.md
+
+ÉTAPE 3A : DÉPLOIEMENT DIRECT (Plus rapide)
+--------------------------------------------
+1. Sur Vercel, cliquez sur "Add New..." → "Project"
+2. Cliquez sur l'onglet "Deploy from a ZIP or folder"
+3. Glissez-déposez le dossier "evo-labs-deploy"
+4. Cliquez sur "Deploy"
+5. ⏱️ Attendez 30 secondes
+6. 🎉 VOTRE SITE EST EN LIGNE !
+
+ÉTAPE 3B : VIA GITHUB (Recommandé pour mises à jour)
+-----------------------------------------------------
+1. Créez un repo GitHub :
+   - Allez sur https://github.com/new
+   - Nom : "evo-labs-website"
+   - Cliquez "Create repository"
+
+2. Uploadez vos fichiers sur GitHub :
+   - Cliquez "uploading an existing file"
+   - Glissez tous les fichiers du dossier "evo-labs-deploy"
+   - Cliquez "Commit changes"
+
+3. Connectez à Vercel :
+   - Sur Vercel, cliquez "Add New..." → "Project"
+   - Cliquez "Import Git Repository"
+   - Sélectionnez votre repo "evo-labs-website"
+   - Cliquez "Deploy"
+   - ⏱️ Attendez 30 secondes
+   - 🎉 VOTRE SITE EST EN LIGNE !
+
+ÉTAPE 4 : RÉCUPÉRER VOTRE URL
+------------------------------
+Vercel vous donne automatiquement une URL :
+→ https://evo-labs-website.vercel.app (ou similaire)
+
+Vous pouvez :
+✓ Visiter votre site immédiatement
+✓ Partager le lien
+✓ Le tester
+
+ÉTAPE 5 : AJOUTER VOTRE DOMAINE PERSONNALISÉ (Optionnel)
+---------------------------------------------------------
+1. Dans Vercel, cliquez sur votre projet
+2. Allez dans "Settings" → "Domains"
+3. Ajoutez votre domaine (ex: evolabs.com)
+4. Suivez les instructions pour configurer les DNS
+5. ⏱️ Attendez la propagation DNS (2-48h)
+6. 🎉 Votre site est sur votre domaine !
+
+🔄 POUR METTRE À JOUR VOTRE SITE
+=================================
+
+Si vous avez utilisé GitHub :
+1. Modifiez vos fichiers sur GitHub
+2. Commit les changements
+3. Vercel redéploie automatiquement ! 🚀
+
+Si vous avez uploadé directement :
+1. Faites vos modifications localement
+2. Re-uploadez sur Vercel
+3. Le site se met à jour automatiquement ! 🚀
+
+📊 PROCHAINES ÉTAPES (À faire après le déploiement)
+====================================================
+
+✅ IMMÉDIAT :
+- Tester le site sur mobile et desktop
+- Vérifier que tout fonctionne
+- Partager le lien de test
+
+🔧 DANS LES PROCHAINS JOURS :
+- Intégrer Stripe pour les paiements
+- Ajouter Google Analytics
+- Optimiser le SEO
+- Configurer les certificats COA
+
+💳 INTÉGRATION STRIPE (On le fera ensemble)
+- Créer un compte Stripe
+- Ajouter les clés API
+- Configurer le checkout
+- Tester les paiements
+
+🆘 BESOIN D'AIDE ?
+==================
+
+Problème de déploiement ?
+→ Vérifiez que tous les fichiers sont bien présents
+
+Le site ne s'affiche pas ?
+→ Regardez les logs dans le dashboard Vercel
+
+Autre question ?
+→ Documentation Vercel : https://vercel.com/docs
+
+================================================================
+💡 ASTUCE : Gardez ce fichier sous la main pour référence !
+================================================================

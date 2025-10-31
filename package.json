@@ -1,0 +1,10 @@
+{
+  "name": "evo-labs",
+  "version": "1.0.0",
+  "description": "Evo Labs - Premium Research Peptides",
+  "private": true,
+  "scripts": {
+    "dev": "python3 -m http.server 8000",
+    "deploy": "vercel --prod"
+  }
+}
