@@ -6100,7 +6100,12 @@ The Evo Labs Research UG team
             setTextContent('labelCheckoutCountry', t.labelCheckoutCountry);
             setTextContent('checkoutSummaryTitle', t.checkoutSummaryTitle);
             setTextContent('checkoutSubtotalLabel', t.checkoutSubtotalLabel);
+            setTextContent('checkoutPromoLabel', t.checkoutPromoLabel);
             setTextContent('checkoutShippingLabel', t.checkoutShippingLabel);
+            setTextContent('promoCodeLabel', t.promoCodeLabel);
+            const promoCodeInput = document.getElementById('promoCode');
+            if (promoCodeInput) promoCodeInput.placeholder = t.promoCodePlaceholder;
+            setTextContent('promoCodeApplyBtn', t.promoCodeApplyBtn);
             // checkoutShippingValue est mis à jour dynamiquement dans updateCheckoutSummary()
             const checkoutShippingValue = document.getElementById('checkoutShippingValue');
             if (checkoutShippingValue && !checkoutShippingValue.textContent.includes('€')) {
