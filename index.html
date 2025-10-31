@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Evo Labs - Premium Research Peptides | Europe</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Stripe.js -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <!-- EmailJS -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         * {
@@ -29,68 +32,82 @@
             line-height: 1.6;
         }
 
-        /* Language Modal */
-        .language-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(5, 8, 19, 0.98);
+        /* Language Switch Animation */
+        .lang-switch {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            backdrop-filter: blur(10px);
+            gap: 0.5rem;
         }
 
-        .language-modal.hidden {
-            display: none;
-        }
-
-        .language-content {
-            background: var(--darker);
-            padding: 4rem;
-            border-radius: 20px;
-            text-align: center;
-            border: 1px solid rgba(29, 155, 240, 0.3);
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        .language-content h2 {
-            font-size: 2rem;
-            margin-bottom: 2rem;
-            color: var(--white);
-        }
-
-        .language-buttons {
-            display: flex;
-            gap: 1.5rem;
-        }
-
-        .lang-btn {
-            padding: 1.2rem 3rem;
-            font-size: 1.1rem;
-            border: 2px solid var(--primary);
-            background: transparent;
-            color: var(--primary);
+        .lang-switch button {
+            padding: 0.5rem 1rem;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
             font-weight: 600;
             font-family: 'Inter', sans-serif;
+            border: 2px solid transparent;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light-gray);
+            position: relative;
+            overflow: hidden;
         }
 
-        .lang-btn:hover {
+        .lang-switch button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(29, 155, 240, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .lang-switch button:active::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .lang-switch button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(29, 155, 240, 0.3);
+        }
+
+        .lang-switch button.active {
             background: var(--primary);
             color: var(--darker);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(29, 155, 240, 0.4);
+            border-color: var(--primary);
+            animation: langSwitchActive 0.4s ease;
+        }
+
+        @keyframes langSwitchActive {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1) rotate(5deg);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .lang-switch button:not(.active) {
+            animation: langSwitchInactive 0.3s ease;
+        }
+
+        @keyframes langSwitchInactive {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(0.95);
+            }
+            100% {
+                transform: scale(1);
+            }
         }
 
         /* Top Banner */
@@ -102,6 +119,41 @@
             font-weight: 700;
             font-size: 0.85rem;
             letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .banner-slider {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .banner-message {
+            position: absolute;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            pointer-events: none;
+        }
+
+        .banner-message.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .banner-message.inactive {
+            opacity: 0;
+            transform: translateY(-20px);
         }
 
         /* Header */
@@ -197,27 +249,6 @@
             stroke: var(--white);
         }
 
-        .lang-switch {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .lang-switch button {
-            background: transparent;
-            border: 1px solid rgba(29, 155, 240, 0.3);
-            padding: 0.4rem 0.8rem;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            color: var(--gray);
-            transition: all 0.3s ease;
-        }
-
-        .lang-switch button.active {
-            background: var(--primary);
-            color: var(--darker);
-            border-color: var(--primary);
-        }
 
         .cart-icon {
             position: relative;
@@ -900,20 +931,22 @@
         }
 
         .cart-item-image {
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
             background: var(--dark);
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            padding: 5px;
         }
 
         .cart-item-image img {
-            width: 60px;
-            height: 60px;
+            width: 100%;
+            height: 100%;
             object-fit: contain;
+            border-radius: 4px;
         }
 
         .cart-item-details {
@@ -1437,6 +1470,231 @@
         .account-close:hover {
             color: var(--primary);
             transform: rotate(90deg);
+        }
+
+        /* Dashboard Modal (Espace Personnel) */
+        .dashboard-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 8, 19, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 10003;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .dashboard-modal.active {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 3rem;
+        }
+
+        .dashboard-container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--darker);
+            border: 1px solid rgba(29, 155, 240, 0.3);
+            border-radius: 20px;
+            padding: 3rem;
+            animation: slideUp 0.3s ease;
+            position: relative;
+            margin-bottom: 3rem;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-header h2 {
+            color: var(--white);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            background: rgba(29, 155, 240, 0.05);
+            padding: 0.5rem;
+            border-radius: 12px;
+            flex-wrap: wrap;
+        }
+
+        .dashboard-tab {
+            flex: 1;
+            min-width: 120px;
+            padding: 0.8rem 1rem;
+            background: transparent;
+            border: none;
+            color: var(--gray);
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .dashboard-tab:hover {
+            background: rgba(29, 155, 240, 0.1);
+            color: var(--white);
+        }
+
+        .dashboard-tab.active {
+            background: var(--primary);
+            color: var(--darker);
+        }
+
+        .dashboard-section {
+            display: none;
+        }
+
+        .dashboard-section.active {
+            display: block;
+        }
+
+        .dashboard-section h3 {
+            color: var(--white);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .dashboard-section h4 {
+            color: var(--white);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .orders-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .order-card {
+            background: rgba(29, 155, 240, 0.05);
+            border: 1px solid rgba(29, 155, 240, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .order-card:hover {
+            border-color: rgba(29, 155, 240, 0.4);
+            background: rgba(29, 155, 240, 0.08);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(29, 155, 240, 0.2);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .order-number {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .order-date {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .order-total {
+            font-weight: 700;
+            color: var(--white);
+            font-size: 1.2rem;
+        }
+
+        .order-items {
+            margin-bottom: 1rem;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(29, 155, 240, 0.1);
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-item-name {
+            color: var(--white);
+            font-weight: 500;
+        }
+
+        .order-item-details {
+            color: var(--gray);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        .order-item-price {
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        .order-shipping {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(29, 155, 240, 0.2);
+        }
+
+        .order-shipping-title {
+            color: var(--light-gray);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .order-shipping-address {
+            color: var(--gray);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .orders-empty {
+            text-align: center;
+            padding: 3rem;
+            color: var(--gray);
+        }
+
+        .orders-empty svg {
+            opacity: 0.5;
+            margin-bottom: 1rem;
         }
 
         /* Checkout Modal */
@@ -2848,20 +3106,19 @@
     </style>
 </head>
 <body>
-    <!-- Language Selection Modal -->
-    <div class="language-modal" id="languageModal">
-        <div class="language-content">
-            <h2>Select Language / Choisissez votre langue</h2>
-            <div class="language-buttons">
-                <button class="lang-btn" onclick="selectLanguage('fr')">🇫🇷 Français</button>
-                <button class="lang-btn" onclick="selectLanguage('en')">🇬🇧 English</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Top Banner -->
     <div class="top-banner">
-        <span id="topBanner">FREE SHIPPING OVER 90€ | LIVRAISON GRATUITE À PARTIR DE 90€</span>
+        <div class="banner-slider">
+            <div class="banner-message active" id="bannerMessage1">
+                <span id="bannerMessage1Text">FREE SHIPPING OVER 90€ | LIVRAISON GRATUITE À PARTIR DE 90€</span>
+            </div>
+            <div class="banner-message" id="bannerMessage2">
+                <span id="bannerMessage2Text">STOCK TRÈS LIMITÉ | VERY LIMITED STOCK</span>
+            </div>
+            <div class="banner-message" id="bannerMessage3">
+                <span id="bannerMessage3Text">À USAGE DE RECHERCHE UNIQUEMENT | FOR RESEARCH USE ONLY</span>
+            </div>
+        </div>
     </div>
 
     <!-- Header -->
@@ -2959,21 +3216,21 @@
                     <button onclick="changeLanguage('en')" id="btnEn">EN</button>
                 </div>
                 
-                <div class="nav-icon search-icon-nav" onclick="openSearch()" title="Recherche">
+                <div class="nav-icon search-icon-nav" onclick="openSearch()" id="navSearchTitle" title="Recherche">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="11" cy="11" r="8"></circle>
                         <path d="m21 21-4.35-4.35"></path>
                     </svg>
                 </div>
                 
-                <div class="nav-icon account-icon-nav" onclick="openAccount()" title="Compte">
+                <div class="nav-icon account-icon-nav" onclick="openAccount()" id="navAccountTitle" title="Compte">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                         <circle cx="12" cy="7" r="4"></circle>
                     </svg>
                 </div>
                 
-                <div class="cart-icon" onclick="openCart()" title="Panier">
+                <div class="cart-icon" onclick="openCart()" id="navCartTitle" title="Panier">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="9" cy="21" r="1" fill="currentColor"></circle>
                         <circle cx="20" cy="21" r="1" fill="currentColor"></circle>
@@ -3129,6 +3386,125 @@
             <button class="guest-checkout-btn" onclick="proceedAsGuest()" id="btnGuest">
                 Continuer en tant que visiteur
             </button>
+        </div>
+    </div>
+
+    <!-- Dashboard Modal (Espace Personnel) -->
+    <div class="dashboard-modal" id="dashboardModal">
+        <div class="dashboard-container">
+            <button class="account-close" onclick="closeDashboard()">×</button>
+            
+            <div class="dashboard-header">
+                <h2 id="dashboardTitle" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <svg class="modal-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <span>Mon Espace Personnel</span>
+                </h2>
+            </div>
+
+            <div class="dashboard-tabs">
+                <button class="dashboard-tab active" onclick="switchDashboardTab('profile')" id="tabProfile">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <span id="dashboardTabProfile">Profil</span>
+                </button>
+                <button class="dashboard-tab" onclick="switchDashboardTab('orders')" id="tabOrders">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    <span id="dashboardTabOrders">Mes Commandes</span>
+                </button>
+                <button class="dashboard-tab" onclick="logout()" id="tabLogout">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    <span id="dashboardTabLogout">Déconnexion</span>
+                </button>
+            </div>
+
+            <!-- Profile Section -->
+            <div class="dashboard-section active" id="profileSection">
+                <form id="profileForm" onsubmit="handleProfileUpdate(event)">
+                    <h3 id="profileSectionTitle">Mes Informations</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="profileFirstName" id="labelProfileFirstName">Prénom</label>
+                            <input type="text" id="profileFirstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="profileLastName" id="labelProfileLastName">Nom</label>
+                            <input type="text" id="profileLastName" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="profileEmail" id="labelProfileEmail">Email</label>
+                        <input type="email" id="profileEmail" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="profilePhone" id="labelProfilePhone">Téléphone</label>
+                        <input type="tel" id="profilePhone" required>
+                    </div>
+
+                    <h4 id="profileAddressTitle" style="margin-top: 2rem; margin-bottom: 1rem; color: var(--white);">Adresse de livraison</h4>
+                    
+                    <div class="form-group">
+                        <label for="profileAddress" id="labelProfileAddress">Adresse</label>
+                        <input type="text" id="profileAddress">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="profileAddress2" id="labelProfileAddress2">Complément d'adresse (optionnel)</label>
+                        <input type="text" id="profileAddress2">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="profileCity" id="labelProfileCity">Ville</label>
+                            <input type="text" id="profileCity">
+                        </div>
+                        <div class="form-group">
+                            <label for="profilePostal" id="labelProfilePostal">Code postal</label>
+                            <input type="text" id="profilePostal">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="profileCountry" id="labelProfileCountry">Pays</label>
+                        <input type="text" id="profileCountry" value="France">
+                    </div>
+
+                    <button type="submit" class="btn" id="btnSaveProfile" style="width: 100%; margin-top: 1.5rem;">
+                        Enregistrer les modifications
+                    </button>
+                </form>
+            </div>
+
+            <!-- Orders Section -->
+            <div class="dashboard-section" id="ordersSection">
+                <h3 id="ordersSectionTitle">Mes Commandes</h3>
+                <div id="ordersList" class="orders-list">
+                    <!-- Les commandes seront affichées ici -->
+                </div>
+                <div id="ordersEmpty" class="orders-empty" style="display: none; text-align: center; padding: 3rem; color: var(--gray);">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.5; margin-bottom: 1rem;">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    <p id="ordersEmptyText">Aucune commande pour le moment</p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -3625,7 +4001,7 @@
     <section class="about-section" id="about">
         <div class="section-label" id="aboutLabel">À PROPOS</div>
         <h2 id="aboutTitle">Evo Labs Research UG</h2>
-        <p id="aboutText">Evo Labs Research UG est une société européenne basée en France, spécialisée dans la fourniture de peptides et composés de recherche de haute pureté. Nous nous engageons à fournir aux chercheurs, laboratoires et institutions scientifiques des produits conformes aux standards GMP les plus rigoureux. Notre mission : garantir transparence, traçabilité et excellence pour faire avancer la recherche scientifique européenne.</p>
+        <p id="aboutText">Evo Labs Research UG est une société européenne basée en Allemagne, spécialisée dans la fourniture de peptides et composés de recherche de haute pureté. Nous nous engageons à fournir aux chercheurs, laboratoires et institutions scientifiques des produits conformes aux standards GMP les plus rigoureux. Notre mission : garantir transparence, traçabilité et excellence pour faire avancer la recherche scientifique européenne.</p>
     </section>
 
     <!-- Contact -->
@@ -3636,25 +4012,8 @@
         </div>
 
         <div class="contact-form">
-            <form onsubmit="handleSubmit(event)">
-                <div class="form-group">
-                    <label for="name" id="labelName">Nom complet</label>
-                    <input type="text" id="name" name="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="email" id="labelEmail">Email</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="message" id="labelMessage">Message</label>
-                    <textarea id="message" name="message" required></textarea>
-                </div>
-                <button type="submit" class="btn" id="submitBtn" style="width: 100%;">Envoyer</button>
-            </form>
-
-            <div class="contact-email">
-                <p id="contactEmailText">Contact direct :</p>
-                <a href="mailto:support@evo-labs.fr">support@evo-labs.fr</a>
+            <div class="contact-email" style="text-align: center; padding: 2rem 0;">
+                <a href="mailto:support@evo-labs.fr" style="font-size: 1.5rem; font-weight: 600; color: #00D4FF; text-decoration: none;">support@evo-labs.fr</a>
             </div>
         </div>
     </section>
@@ -3664,9 +4023,9 @@
         <div class="footer-content">
             <div class="footer-grid">
                 <div class="footer-section">
-                    <h4>Evo Labs Research UG</h4>
-                    <p>Laboratoire européen</p>
-                    <p>Basé en Allemagne</p>
+                    <h4 id="footerLabTitle">Evo Labs Research UG</h4>
+                    <p id="footerLabDesc">Laboratoire européen</p>
+                    <p id="footerLabLocation">Basé en Allemagne</p>
                     <p><a href="mailto:support@evo-labs.fr">support@evo-labs.fr</a></p>
                 </div>
 
@@ -3692,7 +4051,7 @@
             </div>
 
             <div class="footer-bottom">
-                <p>© 2025 Evo Labs Research UG — Tous droits réservés.</p>
+                <p id="footerCopyright">© 2025 Evo Labs Research UG — Tous droits réservés.</p>
             </div>
         </div>
     </footer>
@@ -3763,6 +4122,9 @@
         const translations = {
             fr: {
                 topBanner: 'FREE SHIPPING OVER 90€ | LIVRAISON GRATUITE À PARTIR DE 90€',
+                bannerMessage1: 'FREE SHIPPING OVER 90€ | LIVRAISON GRATUITE À PARTIR DE 90€',
+                bannerMessage2: 'STOCK TRÈS LIMITÉ | VERY LIMITED STOCK',
+                bannerMessage3: 'À USAGE DE RECHERCHE UNIQUEMENT | FOR RESEARCH USE ONLY',
                 navHome: 'ACCUEIL',
                 navProducts: 'PRODUITS',
                 navCOA: 'CERTIFICATS',
@@ -3802,14 +4164,9 @@
                 coaBtn: 'Consulter les certificats',
                 aboutLabel: 'À PROPOS',
                 aboutTitle: 'Evo Labs Research UG',
-                aboutText: 'Evo Labs Research UG est une société européenne basée en France, spécialisée dans la fourniture de peptides et composés de recherche de haute pureté. Nous nous engageons à fournir aux chercheurs, laboratoires et institutions scientifiques des produits conformes aux standards GMP les plus rigoureux. Notre mission : garantir transparence, traçabilité et excellence pour faire avancer la recherche scientifique européenne.',
+                aboutText: 'Evo Labs Research UG est une société européenne basée en Allemagne, spécialisée dans la fourniture de peptides et composés de recherche de haute pureté. Nous nous engageons à fournir aux chercheurs, laboratoires et institutions scientifiques des produits conformes aux standards GMP les plus rigoureux. Notre mission : garantir transparence, traçabilité et excellence pour faire avancer la recherche scientifique européenne.',
                 contactLabel: 'CONTACT',
                 contactTitle: 'Nous Contacter',
-                labelName: 'Nom complet',
-                labelEmail: 'Email',
-                labelMessage: 'Message',
-                submitBtn: 'Envoyer',
-                contactEmailText: 'Contact direct :',
                 footerLinks: 'Liens Légaux',
                 footerLegal: 'Mentions légales',
                 footerTerms: 'CGV',
@@ -3863,6 +4220,40 @@
                 registerSuccess: 'Compte créé avec succès !',
                 loginError: 'Email ou mot de passe incorrect',
                 registerError: 'Cet email est déjà utilisé',
+                logoutSuccess: 'Vous avez été déconnecté',
+                // Nav icons
+                navAccountTitle: 'Compte',
+                navSearchTitle: 'Recherche',
+                navCartTitle: 'Panier',
+                // Dashboard translations
+                dashboardTitle: 'Mon Espace Personnel',
+                dashboardTabProfile: 'Profil',
+                dashboardTabOrders: 'Mes Commandes',
+                dashboardTabLogout: 'Déconnexion',
+                profileSectionTitle: 'Mes Informations',
+                labelProfileFirstName: 'Prénom',
+                labelProfileLastName: 'Nom',
+                labelProfileEmail: 'Email',
+                labelProfilePhone: 'Téléphone',
+                profileAddressTitle: 'Adresse de livraison',
+                labelProfileAddress: 'Adresse',
+                labelProfileAddress2: 'Complément d\'adresse (optionnel)',
+                labelProfileCity: 'Ville',
+                labelProfilePostal: 'Code postal',
+                labelProfileCountry: 'Pays',
+                btnSaveProfile: 'Enregistrer les modifications',
+                ordersSectionTitle: 'Mes Commandes',
+                ordersEmptyText: 'Aucune commande pour le moment',
+                orderShippingTitle: 'Adresse de livraison',
+                // Legal page translations
+                btnClose: 'Fermer',
+                // COA Popup translations
+                coaPopupTitle: 'Certificat d\'Analyse (COA)',
+                // Footer translations
+                footerLabTitle: 'Evo Labs Research UG',
+                footerLabDesc: 'Laboratoire européen',
+                footerLabLocation: 'Basé en Allemagne',
+                footerCopyright: '© 2025 Evo Labs Research UG — Tous droits réservés.',
                 // Checkout translations
                 checkoutTitle: 'Finaliser la commande',
                 checkoutPersonalTitle: 'Informations personnelles',
@@ -3887,6 +4278,9 @@
             },
             en: {
                 topBanner: 'FREE SHIPPING OVER 90€ | LIVRAISON GRATUITE À PARTIR DE 90€',
+                bannerMessage1: 'FREE SHIPPING OVER 90€ | LIVRAISON GRATUITE À PARTIR DE 90€',
+                bannerMessage2: 'VERY LIMITED STOCK | STOCK TRÈS LIMITÉ',
+                bannerMessage3: 'FOR RESEARCH USE ONLY | À USAGE DE RECHERCHE UNIQUEMENT',
                 navHome: 'HOME',
                 navProducts: 'PRODUCTS',
                 navCOA: 'CERTIFICATES',
@@ -3926,14 +4320,9 @@
                 coaBtn: 'View certificates',
                 aboutLabel: 'ABOUT',
                 aboutTitle: 'Evo Labs Research UG',
-                aboutText: 'Evo Labs Research UG is a European company based in France, specializing in the supply of high-purity research peptides and compounds. We are committed to providing researchers, laboratories and scientific institutions with products that meet the most rigorous GMP standards. Our mission: guarantee transparency, traceability and excellence to advance European scientific research.',
+                aboutText: 'Evo Labs Research UG is a European company based in Germany, specializing in the supply of high-purity research peptides and compounds. We are committed to providing researchers, laboratories and scientific institutions with products that meet the most rigorous GMP standards. Our mission: guarantee transparency, traceability and excellence to advance European scientific research.',
                 contactLabel: 'CONTACT',
                 contactTitle: 'Contact Us',
-                labelName: 'Full name',
-                labelEmail: 'Email',
-                labelMessage: 'Message',
-                submitBtn: 'Send',
-                contactEmailText: 'Direct contact:',
                 footerLinks: 'Legal Links',
                 footerLegal: 'Legal notice',
                 footerTerms: 'Terms & Conditions',
@@ -3987,6 +4376,40 @@
                 registerSuccess: 'Account created successfully!',
                 loginError: 'Incorrect email or password',
                 registerError: 'This email is already in use',
+                logoutSuccess: 'You have been logged out',
+                // Nav icons
+                navAccountTitle: 'Account',
+                navSearchTitle: 'Search',
+                navCartTitle: 'Cart',
+                // Dashboard translations
+                dashboardTitle: 'My Account',
+                dashboardTabProfile: 'Profile',
+                dashboardTabOrders: 'My Orders',
+                dashboardTabLogout: 'Logout',
+                profileSectionTitle: 'My Information',
+                labelProfileFirstName: 'First name',
+                labelProfileLastName: 'Last name',
+                labelProfileEmail: 'Email',
+                labelProfilePhone: 'Phone',
+                profileAddressTitle: 'Shipping address',
+                labelProfileAddress: 'Address',
+                labelProfileAddress2: 'Address line 2 (optional)',
+                labelProfileCity: 'City',
+                labelProfilePostal: 'Postal code',
+                labelProfileCountry: 'Country',
+                btnSaveProfile: 'Save changes',
+                ordersSectionTitle: 'My Orders',
+                ordersEmptyText: 'No orders yet',
+                orderShippingTitle: 'Shipping address',
+                // Legal page translations
+                btnClose: 'Close',
+                // COA Popup translations
+                coaPopupTitle: 'Certificate of Analysis (COA)',
+                // Footer translations
+                footerLabTitle: 'Evo Labs Research UG',
+                footerLabDesc: 'European laboratory',
+                footerLabLocation: 'Based in Germany',
+                footerCopyright: '© 2025 Evo Labs Research UG — All rights reserved.',
                 // Checkout translations
                 checkoutTitle: 'Checkout',
                 checkoutPersonalTitle: 'Personal information',
@@ -4017,6 +4440,62 @@
         let currentUser = null;
         let isGuest = false; // Track if user chose to continue as guest
         let isCheckingOut = false; // Track if user is in checkout flow
+        let currentLegalPage = null; // Track which legal page is open
+
+        // STRIPE CONFIGURATION
+        // IMPORTANT: Remplacez par votre clé publique Stripe (disponible dans votre dashboard Stripe)
+        // Mode test: pk_test_... | Mode production: pk_live_...
+        // Pour tester, remplacez null par votre clé publique Stripe: Stripe('pk_test_...')
+        let stripe = null;
+        
+        // Fonction pour initialiser Stripe (à appeler une fois que vous avez votre clé)
+        function initStripe(publicKey) {
+            if (publicKey && typeof Stripe !== 'undefined') {
+                stripe = Stripe(publicKey);
+                console.log('Stripe initialisé avec succès');
+            } else {
+                console.warn('Stripe non initialisé. Veuillez fournir une clé publique valide.');
+            }
+        }
+        
+        // EMAILJS CONFIGURATION
+        // Initialisation EmailJS avec votre clé publique
+        (function(){
+            emailjs.init("7eqj2mK9qj1RaWlHq");
+        })();
+
+        // BANNER ROTATION SYSTEM
+        let currentBannerIndex = 0;
+        const bannerMessages = ['bannerMessage1', 'bannerMessage2', 'bannerMessage3'];
+        
+        function rotateBanner() {
+            // Remove active class from current message
+            const currentMessage = document.getElementById(bannerMessages[currentBannerIndex]);
+            if (currentMessage) {
+                currentMessage.classList.remove('active');
+                currentMessage.classList.add('inactive');
+                
+                // Reset after transition
+                setTimeout(() => {
+                    currentMessage.classList.remove('inactive');
+                }, 600);
+            }
+            
+            // Move to next message
+            currentBannerIndex = (currentBannerIndex + 1) % bannerMessages.length;
+            
+            // Add active class to next message
+            const nextMessage = document.getElementById(bannerMessages[currentBannerIndex]);
+            if (nextMessage) {
+                nextMessage.classList.add('active');
+            }
+        }
+        
+        // Start banner rotation after page load
+        function initBannerRotation() {
+            // Rotate every 4 seconds
+            setInterval(rotateBanner, 4000);
+        }
 
         // Prix fixes par code produit
         function getFixedPrice(productName) {
@@ -4168,16 +4647,201 @@
         // ACCOUNT SYSTEM
         function openAccount() {
             if (currentUser) {
-                // User is logged in, show profile or logout option
-                const t = translations[currentLang];
-                showNotification(
-                    `${t.welcome || 'Bienvenue'} ${currentUser.firstName} ${currentUser.lastName}! ${t.profileComingSoon || 'Fonctionnalité de profil à venir...'}`,
-                    'success'
-                );
+                // User is logged in, open dashboard
+                openDashboard();
             } else {
                 document.getElementById('accountModal').classList.add('active');
                 document.body.style.overflow = 'hidden';
             }
+        }
+
+        // DASHBOARD SYSTEM (Espace Personnel)
+        function openDashboard() {
+            if (!currentUser) {
+                openAccount();
+                return;
+            }
+            
+            loadProfile();
+            loadOrders();
+            document.getElementById('dashboardModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDashboard() {
+            document.getElementById('dashboardModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function switchDashboardTab(tab) {
+            const profileSection = document.getElementById('profileSection');
+            const ordersSection = document.getElementById('ordersSection');
+            const tabProfile = document.getElementById('tabProfile');
+            const tabOrders = document.getElementById('tabOrders');
+
+            if (tab === 'profile') {
+                profileSection.classList.add('active');
+                ordersSection.classList.remove('active');
+                tabProfile.classList.add('active');
+                tabOrders.classList.remove('active');
+                loadProfile();
+            } else if (tab === 'orders') {
+                profileSection.classList.remove('active');
+                ordersSection.classList.add('active');
+                tabProfile.classList.remove('active');
+                tabOrders.classList.add('active');
+                loadOrders();
+            }
+        }
+
+        function loadProfile() {
+            if (!currentUser) return;
+
+            // Récupérer les données utilisateur mises à jour depuis localStorage
+            const users = JSON.parse(localStorage.getItem('evo_labs_users') || '[]');
+            const updatedUser = users.find(u => u.email === currentUser.email);
+            
+            if (updatedUser) {
+                currentUser = updatedUser;
+                saveUser(currentUser);
+            }
+
+            // Pré-remplir le formulaire
+            document.getElementById('profileFirstName').value = currentUser.firstName || '';
+            document.getElementById('profileLastName').value = currentUser.lastName || '';
+            document.getElementById('profileEmail').value = currentUser.email || '';
+            document.getElementById('profilePhone').value = currentUser.phone || '';
+            
+            // Adresse de livraison
+            if (currentUser.shipping) {
+                document.getElementById('profileAddress').value = currentUser.shipping.address || '';
+                document.getElementById('profileAddress2').value = currentUser.shipping.address2 || '';
+                document.getElementById('profileCity').value = currentUser.shipping.city || '';
+                document.getElementById('profilePostal').value = currentUser.shipping.postal || '';
+                document.getElementById('profileCountry').value = currentUser.shipping.country || 'France';
+            }
+        }
+
+        function handleProfileUpdate(event) {
+            event.preventDefault();
+            const t = translations[currentLang];
+
+            if (!currentUser) return;
+
+            // Mettre à jour les données utilisateur
+            currentUser.firstName = document.getElementById('profileFirstName').value;
+            currentUser.lastName = document.getElementById('profileLastName').value;
+            currentUser.phone = document.getElementById('profilePhone').value;
+            
+            // Adresse de livraison
+            currentUser.shipping = {
+                address: document.getElementById('profileAddress').value,
+                address2: document.getElementById('profileAddress2').value,
+                city: document.getElementById('profileCity').value,
+                postal: document.getElementById('profilePostal').value,
+                country: document.getElementById('profileCountry').value
+            };
+
+            // Mettre à jour dans localStorage
+            const users = JSON.parse(localStorage.getItem('evo_labs_users') || '[]');
+            const userIndex = users.findIndex(u => u.email === currentUser.email);
+            if (userIndex !== -1) {
+                users[userIndex] = currentUser;
+                localStorage.setItem('evo_labs_users', JSON.stringify(users));
+            }
+
+            saveUser(currentUser);
+            showNotification(
+                currentLang === 'fr' ? 'Profil mis à jour avec succès !' : 'Profile updated successfully!',
+                'success'
+            );
+        }
+
+        function loadOrders() {
+            if (!currentUser) return;
+
+            const ordersList = document.getElementById('ordersList');
+            const ordersEmpty = document.getElementById('ordersEmpty');
+
+            // Récupérer toutes les commandes
+            const allOrders = JSON.parse(localStorage.getItem('evo_labs_orders') || '[]');
+            
+            // Filtrer les commandes de l'utilisateur connecté
+            const userOrders = allOrders.filter(order => 
+                order.userEmail === currentUser.email || 
+                order.customer?.email === currentUser.email
+            );
+
+            if (userOrders.length === 0) {
+                ordersList.innerHTML = '';
+                ordersEmpty.style.display = 'block';
+                return;
+            }
+
+            ordersEmpty.style.display = 'none';
+
+            // Afficher les commandes (du plus récent au plus ancien)
+            const sortedOrders = [...userOrders].sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
+            ordersList.innerHTML = sortedOrders.map((order, index) => {
+                const t = translations[currentLang];
+                const orderDate = new Date(order.orderDate);
+                const formattedDate = orderDate.toLocaleDateString(currentLang === 'fr' ? 'fr-FR' : 'en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                const orderNumber = `#${String(sortedOrders.length - index).padStart(6, '0')}`;
+
+                const itemsList = order.items.map(item => `
+                    <div class="order-item">
+                        <div>
+                            <div class="order-item-name">${item.name}</div>
+                            <div class="order-item-details">${item.size} × ${item.quantity}</div>
+                        </div>
+                        <div class="order-item-price">${(item.price * item.quantity).toFixed(2).replace('.', ',')} €</div>
+                    </div>
+                `).join('');
+
+                const shippingAddress = order.shipping ? `
+                    <div class="order-shipping">
+                        <div class="order-shipping-title">${t.orderShippingTitle}</div>
+                        <div class="order-shipping-address">
+                            ${order.shipping.address}${order.shipping.address2 ? '<br>' + order.shipping.address2 : ''}<br>
+                            ${order.shipping.postal} ${order.shipping.city}<br>
+                            ${order.shipping.country}
+                        </div>
+                    </div>
+                ` : '';
+
+                return `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div>
+                                <div class="order-number">${orderNumber}</div>
+                                <div class="order-date">${formattedDate}</div>
+                            </div>
+                            <div class="order-total">${order.total.toFixed(2).replace('.', ',')} €</div>
+                        </div>
+                        <div class="order-items">
+                            ${itemsList}
+                        </div>
+                        ${shippingAddress}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('evo_labs_user');
+            isGuest = false;
+            closeDashboard();
+            
+            const t = translations[currentLang];
+            showNotification(t.logoutSuccess, 'success');
         }
 
         function closeAccount() {
@@ -4331,63 +4995,433 @@
             const t = translations[currentLang];
             const itemsList = document.getElementById('checkoutItemsList');
             const subtotalValue = document.getElementById('checkoutSubtotalValue');
+            const shippingValue = document.getElementById('checkoutShippingValue');
             const totalValue = document.getElementById('checkoutTotalValue');
 
             // Render items
             itemsList.innerHTML = cart.map(item => `
                 <div class="summary-item">
-                    <span>${item.quantity}x ${item.name} (${item.size})</span>
+                    <span>${item.quantity}x ${item.name}${item.size ? ` (${item.size})` : ''}</span>
                     <span>${(item.price * item.quantity).toFixed(2).replace('.', ',')} €</span>
                 </div>
             `).join('');
 
             // Calculate totals
             const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const FREE_SHIPPING_THRESHOLD = 90;
+            const shippingCost = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : 5;
+            const total = subtotal + shippingCost;
+
             subtotalValue.textContent = `${subtotal.toFixed(2).replace('.', ',')} €`;
-            totalValue.textContent = `${subtotal.toFixed(2).replace('.', ',')} €`;
+            
+            // Update shipping display
+            if (shippingCost === 0) {
+                shippingValue.textContent = t.checkoutShippingValue || 'Gratuite';
+            } else {
+                shippingValue.textContent = `${shippingCost.toFixed(2).replace('.', ',')} €`;
+            }
+            
+            totalValue.textContent = `${total.toFixed(2).replace('.', ',')} €`;
         }
 
-        function handleCheckoutSubmit(event) {
+        // Create Stripe Checkout Session
+        async function createStripeCheckoutSession(orderData) {
+            try {
+                // IMPORTANT: Vous devez créer un endpoint backend qui crée la session Stripe
+                // Cet endpoint doit utiliser votre clé secrète Stripe (sk_test_... ou sk_live_...)
+                // Pour Vercel, placez le fichier api/create-checkout-session.js dans le dossier api/
+                // Ajoutez votre clé secrète dans les variables d'environnement Vercel: STRIPE_SECRET_KEY
+                
+                const response = await fetch('/api/create-checkout-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        items: orderData.items.map(item => ({
+                            name: item.name,
+                            description: `${item.size} - ${item.name}`,
+                            amount: Math.round(item.price * 100), // Convertir en centimes
+                            currency: 'eur',
+                            quantity: item.quantity
+                        })),
+                        customer: {
+                            email: orderData.customer.email,
+                            name: `${orderData.customer.firstName} ${orderData.customer.lastName}`,
+                            phone: orderData.customer.phone
+                        },
+                        shipping: orderData.shipping,
+                        orderId: orderData.orderId,
+                        metadata: {
+                            orderId: orderData.orderId,
+                            customerEmail: orderData.customer.email,
+                            customerName: `${orderData.customer.firstName} ${orderData.customer.lastName}`
+                        },
+                        successUrl: `${window.location.origin}${window.location.pathname}?session_id={CHECKOUT_SESSION_ID}`,
+                        cancelUrl: `${window.location.origin}${window.location.pathname}`
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+                    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                }
+
+                const session = await response.json();
+                return session;
+            } catch (error) {
+                console.error('Erreur lors de la création de la session Stripe:', error);
+                
+                // Message d'erreur plus détaillé
+                if (error.message.includes('fetch')) {
+                    throw new Error(currentLang === 'fr'
+                        ? 'Impossible de se connecter au serveur de paiement. Vérifiez votre connexion internet et réessayez.'
+                        : 'Unable to connect to payment server. Check your internet connection and try again.');
+                }
+                
+                throw error;
+            }
+        }
+
+        // Verify Stripe session with backend
+        async function verifyStripeSession(sessionId) {
+            try {
+                const response = await fetch(`/api/verify-session?session_id=${sessionId}`);
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+                    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Erreur lors de la vérification de la session:', error);
+                throw error;
+            }
+        }
+
+        // Send confirmation email via EmailJS
+        async function sendOrderConfirmationEmail(orderData) {
+            try {
+                const itemsList = orderData.items.map(item => {
+                    const itemTotal = (item.price * item.quantity).toFixed(2);
+                    return `• ${item.quantity}x ${item.name}${item.size ? ` (${item.size})` : ''} - ${itemTotal} €`;
+                }).join('\n');
+
+                const shippingCost = orderData.total >= 90 ? 0 : 5;
+                const subtotal = orderData.total - shippingCost;
+
+                const emailContent = currentLang === 'fr' ? `
+Bonjour ${orderData.customer.firstName} ${orderData.customer.lastName},
+
+Nous vous remercions chaleureusement pour votre commande sur Evo Labs Research UG !
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                    RÉCAPITULATIF DE VOTRE COMMANDE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Numéro de commande: ${orderData.orderId}
+
+PRODUITS:
+${itemsList}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Sous-total: ${subtotal.toFixed(2)} €
+Frais de livraison: ${shippingCost > 0 ? shippingCost.toFixed(2) + ' €' : 'Gratuit'}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TOTAL: ${orderData.total.toFixed(2)} €
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ADRESSE DE LIVRAISON:
+${orderData.customer.firstName} ${orderData.customer.lastName}
+${orderData.shipping.address}${orderData.shipping.address2 ? '\n' + orderData.shipping.address2 : ''}
+${orderData.shipping.postal} ${orderData.shipping.city}
+${orderData.shipping.country}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Votre commande est en cours de traitement. Vous recevrez une notification par email dès que votre commande sera expédiée.
+
+Pour toute question concernant votre commande, n'hésitez pas à nous contacter:
+📧 support@evo-labs.fr
+
+Nous vous remercions de votre confiance !
+
+Cordialement,
+L'équipe Evo Labs Research UG
+                `.trim() : `
+Hello ${orderData.customer.firstName} ${orderData.customer.lastName},
+
+Thank you very much for your order with Evo Labs Research UG!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                      ORDER SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Order number: ${orderData.orderId}
+
+PRODUCTS:
+${itemsList}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Subtotal: ${subtotal.toFixed(2)} €
+Shipping: ${shippingCost > 0 ? shippingCost.toFixed(2) + ' €' : 'Free'}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TOTAL: ${orderData.total.toFixed(2)} €
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+SHIPPING ADDRESS:
+${orderData.customer.firstName} ${orderData.customer.lastName}
+${orderData.shipping.address}${orderData.shipping.address2 ? '\n' + orderData.shipping.address2 : ''}
+${orderData.shipping.postal} ${orderData.shipping.city}
+${orderData.shipping.country}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Your order is being processed. You will receive an email notification as soon as your order is shipped.
+
+For any questions regarding your order, please contact us:
+📧 support@evo-labs.fr
+
+Thank you for your trust!
+
+Best regards,
+The Evo Labs Research UG team
+                `.trim();
+
+                await emailjs.send(
+                    'service_dlxoage',
+                    'template_i0akca4',
+                    {
+                        to_email: orderData.customer.email,
+                        to_name: `${orderData.customer.firstName} ${orderData.customer.lastName}`,
+                        message: emailContent,
+                        subject: currentLang === 'fr' 
+                            ? `Confirmation de commande #${orderData.orderId} - Evo Labs Research UG`
+                            : `Order Confirmation #${orderData.orderId} - Evo Labs Research UG`
+                    }
+                );
+
+                console.log('Email de confirmation envoyé avec succès');
+                return true;
+            } catch (error) {
+                console.error('Erreur lors de l\'envoi de l\'email:', error);
+                // Ne pas bloquer le processus si l'email échoue
+                return false;
+            }
+        }
+
+        async function handleCheckoutSubmit(event) {
             event.preventDefault();
             const t = translations[currentLang];
 
-            // Get form data
-            const orderData = {
-                customer: {
-                    firstName: document.getElementById('checkoutFirstName').value,
-                    lastName: document.getElementById('checkoutLastName').value,
-                    email: document.getElementById('checkoutEmail').value,
-                    phone: document.getElementById('checkoutPhone').value
-                },
-                shipping: {
-                    address: document.getElementById('checkoutAddress').value,
-                    address2: document.getElementById('checkoutAddress2').value,
-                    city: document.getElementById('checkoutCity').value,
-                    postal: document.getElementById('checkoutPostal').value,
-                    country: document.getElementById('checkoutCountry').value
-                },
-                items: cart,
-                total: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
-                orderDate: new Date().toISOString()
-            };
+            const payButton = document.getElementById('btnCheckoutPay');
+            const originalButtonText = payButton.textContent;
+            payButton.disabled = true;
+            payButton.textContent = currentLang === 'fr' ? 'Traitement...' : 'Processing...';
 
-            // Save order to localStorage
-            const orders = JSON.parse(localStorage.getItem('evo_labs_orders') || '[]');
-            orders.push(orderData);
-            localStorage.setItem('evo_labs_orders', JSON.stringify(orders));
+            try {
+                // Générer un orderId unique une seule fois
+                const orderId = `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-            // Clear cart
-            cart = [];
-            saveCart();
+                // Calculate totals with shipping
+                const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const FREE_SHIPPING_THRESHOLD = 90;
+                const shippingCost = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : 5;
+                const total = subtotal + shippingCost;
 
-            showNotification(t.orderSuccess, 'success', 5000);
-            closeCheckout();
-            
-            // Reset guest status
-            isGuest = false;
+                const orderData = {
+                    orderId: orderId,
+                    customer: {
+                        firstName: document.getElementById('checkoutFirstName').value,
+                        lastName: document.getElementById('checkoutLastName').value,
+                        email: document.getElementById('checkoutEmail').value,
+                        phone: document.getElementById('checkoutPhone').value
+                    },
+                    shipping: {
+                        address: document.getElementById('checkoutAddress').value,
+                        address2: document.getElementById('checkoutAddress2').value,
+                        city: document.getElementById('checkoutCity').value,
+                        postal: document.getElementById('checkoutPostal').value,
+                        country: document.getElementById('checkoutCountry').value
+                    },
+                    items: cart.map(item => ({ ...item })),
+                    subtotal: subtotal,
+                    shippingCost: shippingCost,
+                    total: total,
+                    orderDate: new Date().toISOString(),
+                    userEmail: currentUser ? currentUser.email : document.getElementById('checkoutEmail').value,
+                    paymentStatus: 'pending'
+                };
 
-            // Here you would redirect to Stripe payment
-            // window.location.href = 'your-stripe-checkout-url';
+                // Sauvegarder la commande en attente
+                const pendingOrders = JSON.parse(localStorage.getItem('evo_labs_pending_orders') || '[]');
+                pendingOrders.push(orderData);
+                localStorage.setItem('evo_labs_pending_orders', JSON.stringify(pendingOrders));
+
+                // Mettre à jour l'adresse de livraison de l'utilisateur si connecté
+                if (currentUser) {
+                    currentUser.shipping = orderData.shipping;
+                    const users = JSON.parse(localStorage.getItem('evo_labs_users') || '[]');
+                    const userIndex = users.findIndex(u => u.email === currentUser.email);
+                    if (userIndex !== -1) {
+                        users[userIndex] = currentUser;
+                        localStorage.setItem('evo_labs_users', JSON.stringify(users));
+                    }
+                    saveUser(currentUser);
+                }
+
+                // Créer la session Stripe Checkout
+                if (!stripe) {
+                    throw new Error(currentLang === 'fr' 
+                        ? 'Stripe n\'est pas initialisé. Veuillez initialiser Stripe avec votre clé publique.' 
+                        : 'Stripe is not initialized. Please initialize Stripe with your public key.');
+                }
+
+                const session = await createStripeCheckoutSession(orderData);
+                
+                if (!session || !session.id) {
+                    throw new Error(currentLang === 'fr'
+                        ? 'Erreur: Aucune session Stripe n\'a été créée'
+                        : 'Error: No Stripe session was created');
+                }
+
+                // Rediriger vers Stripe Checkout
+                const result = await stripe.redirectToCheckout({
+                    sessionId: session.id
+                });
+                
+                if (result.error) {
+                    throw new Error(result.error.message);
+                }
+            } catch (error) {
+                console.error('Erreur lors du checkout:', error);
+                
+                // Retirer la commande en attente en cas d'erreur
+                const pendingOrders = JSON.parse(localStorage.getItem('evo_labs_pending_orders') || '[]');
+                if (pendingOrders.length > 0) {
+                    pendingOrders.pop();
+                    localStorage.setItem('evo_labs_pending_orders', JSON.stringify(pendingOrders));
+                }
+
+                const errorMessage = error.message || (currentLang === 'fr'
+                    ? 'Erreur lors du traitement du paiement. Veuillez réessayer.'
+                    : 'Error processing payment. Please try again.');
+
+                showNotification(errorMessage, 'error', 5000);
+                
+                payButton.disabled = false;
+                payButton.textContent = originalButtonText;
+            }
+        }
+
+        async function confirmOrderAfterPayment(sessionId) {
+            try {
+                // Vérifier la session Stripe côté serveur pour plus de sécurité
+                let verifiedSession = null;
+                try {
+                    verifiedSession = await verifyStripeSession(sessionId);
+                    if (!verifiedSession.success || verifiedSession.payment_status !== 'paid') {
+                        throw new Error('Payment not verified');
+                    }
+                    console.log('Session Stripe vérifiée avec succès:', verifiedSession);
+                } catch (verifyError) {
+                    console.error('Erreur lors de la vérification de la session:', verifyError);
+                    // Continuer quand même si la vérification échoue (pour éviter de bloquer l'utilisateur)
+                    // mais loguer l'erreur pour investigation
+                    showNotification(
+                        currentLang === 'fr'
+                            ? 'Attention: Impossible de vérifier le paiement. Vérifiez votre commande dans votre espace.'
+                            : 'Warning: Unable to verify payment. Please check your order in your account.',
+                        'warning',
+                        5000
+                    );
+                }
+
+                const pendingOrders = JSON.parse(localStorage.getItem('evo_labs_pending_orders') || '[]');
+                if (pendingOrders.length === 0) {
+                    console.warn('Aucune commande en attente trouvée');
+                    // Si on a une session vérifiée, on peut quand même créer une commande partielle
+                    if (verifiedSession && verifiedSession.metadata) {
+                        const fallbackOrder = {
+                            orderId: verifiedSession.metadata.orderId || `order_${Date.now()}`,
+                            sessionId: sessionId,
+                            paymentStatus: 'paid',
+                            paidDate: new Date().toISOString(),
+                            customer: {
+                                email: verifiedSession.customer_email || verifiedSession.metadata.customerEmail
+                            },
+                            items: [],
+                            total: verifiedSession.amount_total ? (verifiedSession.amount_total / 100) : 0
+                        };
+                        const orders = JSON.parse(localStorage.getItem('evo_labs_orders') || '[]');
+                        orders.push(fallbackOrder);
+                        localStorage.setItem('evo_labs_orders', JSON.stringify(orders));
+                    }
+                    return;
+                }
+
+                const orderData = pendingOrders[pendingOrders.length - 1];
+                orderData.sessionId = sessionId;
+                orderData.paymentStatus = 'paid';
+                orderData.paidDate = new Date().toISOString();
+                orderData.orderId = orderData.orderId || `order_${Date.now()}`;
+                
+                // Mettre à jour avec les données vérifiées de Stripe si disponibles
+                if (verifiedSession) {
+                    orderData.stripePaymentIntent = verifiedSession.payment_intent;
+                    orderData.verifiedAmount = verifiedSession.amount_total ? (verifiedSession.amount_total / 100) : orderData.total;
+                }
+
+                // Sauvegarder la commande dans localStorage
+                const orders = JSON.parse(localStorage.getItem('evo_labs_orders') || '[]');
+                orders.push(orderData);
+                localStorage.setItem('evo_labs_orders', JSON.stringify(orders));
+
+                // Retirer la commande des commandes en attente
+                pendingOrders.pop();
+                localStorage.setItem('evo_labs_pending_orders', JSON.stringify(pendingOrders));
+
+                // Vider le panier
+                cart = [];
+                saveCart();
+                updateCartCount();
+
+                // Envoyer l'email de confirmation
+                const emailSent = await sendOrderConfirmationEmail(orderData);
+                
+                if (emailSent) {
+                    console.log('Commande confirmée et email envoyé avec succès');
+                } else {
+                    console.warn('Commande confirmée mais email non envoyé');
+                }
+
+                // Afficher une notification de succès
+                showNotification(
+                    currentLang === 'fr'
+                        ? `✅ Commande confirmée ! Un email de confirmation a été envoyé à ${orderData.customer.email}`
+                        : `✅ Order confirmed! A confirmation email has been sent to ${orderData.customer.email}`,
+                    'success',
+                    8000
+                );
+
+                // Recharger les commandes dans le dashboard si ouvert
+                if (currentUser) {
+                    loadOrders();
+                }
+            } catch (error) {
+                console.error('Erreur lors de la confirmation de commande:', error);
+                showNotification(
+                    currentLang === 'fr'
+                        ? 'Erreur lors de la confirmation de commande. Veuillez nous contacter avec votre numéro de commande.'
+                        : 'Error confirming order. Please contact us with your order number.',
+                    'error',
+                    8000
+                );
+            }
         }
 
         // SHOPPING CART SYSTEM
@@ -4525,11 +5559,13 @@
             cartFooter.style.display = 'block';
 
             // Render cart items
-            cartItems.innerHTML = cart.map((item, index) => `
+            cartItems.innerHTML = cart.map((item, index) => {
+                const hasImage = item.image && item.image.trim() !== '';
+                return `
                 <div class="cart-item">
-                    <div class="cart-item-image">
+                    ${hasImage ? `<div class="cart-item-image">
                         <img src="${item.image}" alt="${item.name}">
-                    </div>
+                    </div>` : ''}
                     <div class="cart-item-details">
                         <div class="cart-item-name">${item.name}</div>
                         <div class="cart-item-size">${item.size}</div>
@@ -4544,7 +5580,8 @@
                         </div>
                     </div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
 
             // Calculate and update total
             const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -4555,16 +5592,31 @@
 
         // Initialize
         window.addEventListener('DOMContentLoaded', function() {
+            // Initialiser Stripe avec votre clé publique
+            // IMPORTANT: Clé en mode PRODUCTION (live)
+            initStripe('pk_live_51SErgOCV2WBfKJY9w1VSV7rdnF4CPzuH0ZZajy5IkK0hVoYLw9lzoJfj3eXZOcUq7qV4xJYWc7detXoWCXXDuRTq00yUCIot3A');
+            
+            // Vérifier si on revient d'un paiement Stripe réussi
+            const urlParams = new URLSearchParams(window.location.search);
+            const sessionId = urlParams.get('session_id');
+            const paymentSuccess = urlParams.get('payment');
+            if (sessionId) {
+                // Nettoyer l'URL immédiatement
+                window.history.replaceState({}, document.title, window.location.pathname);
+                // Confirmer la commande (cela affichera une notification)
+                confirmOrderAfterPayment(sessionId);
+            }
+
             const savedLang = localStorage.getItem('evo_labs_lang');
             if (savedLang) {
                 currentLang = savedLang;
-                document.getElementById('languageModal').classList.add('hidden');
                 applyTranslations();
                 updateLangButtons();
             }
             // Load cart and user
             loadCart();
             loadUser();
+            initBannerRotation();
         });
 
         // COA Images mapping
@@ -4604,19 +5656,36 @@
             }
         }
 
-        function selectLanguage(lang) {
-            currentLang = lang;
-            localStorage.setItem('evo_labs_lang', lang);
-            document.getElementById('languageModal').classList.add('hidden');
-            applyTranslations();
-            updateLangButtons();
-        }
-
         function changeLanguage(lang) {
+            // Animation sur les boutons de langue
+            const btnFr = document.getElementById('btnFr');
+            const btnEn = document.getElementById('btnEn');
+            
+            // Réinitialiser les animations
+            btnFr.style.animation = 'none';
+            btnEn.style.animation = 'none';
+            
+            // Forcer le reflow pour relancer l'animation
+            void btnFr.offsetWidth;
+            void btnEn.offsetWidth;
+            
+            // Changer la langue
             currentLang = lang;
             localStorage.setItem('evo_labs_lang', lang);
             applyTranslations();
             updateLangButtons();
+            
+            // If a legal page is open, reload it with new language
+            if (currentLegalPage) {
+                openLegalPage(currentLegalPage);
+            }
+            
+            // Relancer l'animation
+            if (lang === 'fr') {
+                btnFr.style.animation = 'langSwitchActive 0.4s ease';
+            } else {
+                btnEn.style.animation = 'langSwitchActive 0.4s ease';
+            }
         }
 
         function updateLangButtons() {
@@ -4627,7 +5696,10 @@
         function applyTranslations() {
             const t = translations[currentLang];
             
-            document.getElementById('topBanner').textContent = t.topBanner;
+            // Update banner messages
+            document.getElementById('bannerMessage1Text').textContent = t.bannerMessage1;
+            document.getElementById('bannerMessage2Text').textContent = t.bannerMessage2;
+            document.getElementById('bannerMessage3Text').textContent = t.bannerMessage3;
             document.getElementById('navHome').textContent = t.navHome;
             document.getElementById('navProducts').textContent = t.navProducts;
             document.getElementById('navCOA').textContent = t.navCOA;
@@ -4679,11 +5751,6 @@
             
             document.getElementById('contactLabel').textContent = t.contactLabel;
             document.getElementById('contactTitle').textContent = t.contactTitle;
-            document.getElementById('labelName').textContent = t.labelName;
-            document.getElementById('labelEmail').textContent = t.labelEmail;
-            document.getElementById('labelMessage').textContent = t.labelMessage;
-            document.getElementById('submitBtn').textContent = t.submitBtn;
-            document.getElementById('contactEmailText').textContent = t.contactEmailText;
             
             document.getElementById('footerLinks').textContent = t.footerLinks;
             document.getElementById('footerLegal').textContent = t.footerLegal;
@@ -4695,9 +5762,25 @@
             document.getElementById('footerInfo2').textContent = t.footerInfo2;
             document.getElementById('footerInfo3').textContent = t.footerInfo3;
             
+            // Footer lab section
+            const footerLabTitle = document.getElementById('footerLabTitle');
+            const footerLabDesc = document.getElementById('footerLabDesc');
+            const footerLabLocation = document.getElementById('footerLabLocation');
+            const footerCopyright = document.getElementById('footerCopyright');
+            if (footerLabTitle) footerLabTitle.textContent = t.footerLabTitle;
+            if (footerLabDesc) footerLabDesc.textContent = t.footerLabDesc;
+            if (footerLabLocation) footerLabLocation.textContent = t.footerLabLocation;
+            if (footerCopyright) footerCopyright.textContent = t.footerCopyright;
+            
             document.getElementById('disclaimerTitle').textContent = t.disclaimerTitle;
             document.getElementById('disclaimerText').textContent = t.disclaimerText;
             document.getElementById('fixedDisclaimer').textContent = t.fixedDisclaimer;
+            
+            // COA Popup translations
+            const coaPopupTitle = document.getElementById('coaPopupTitle');
+            const coaPopupCloseBtn = document.getElementById('coaPopupCloseBtn');
+            if (coaPopupTitle) coaPopupTitle.textContent = t.coaPopupTitle;
+            if (coaPopupCloseBtn) coaPopupCloseBtn.textContent = t.btnClose;
             
             // Modal translations
             document.getElementById('modalBadge').textContent = t.modalBadge;
@@ -4731,6 +5814,34 @@
             document.getElementById('accountOr').textContent = t.accountOr;
             document.getElementById('btnGuest').textContent = t.btnGuest;
             
+            // Update nav icons titles
+            const navAccountTitle = document.getElementById('navAccountTitle');
+            const navSearchTitle = document.getElementById('navSearchTitle');
+            const navCartTitle = document.getElementById('navCartTitle');
+            if (navAccountTitle) navAccountTitle.setAttribute('title', t.navAccountTitle);
+            if (navSearchTitle) navSearchTitle.setAttribute('title', t.navSearchTitle);
+            if (navCartTitle) navCartTitle.setAttribute('title', t.navCartTitle);
+            
+            // Update dashboard translations
+            document.getElementById('dashboardTitle').querySelector('span').textContent = t.dashboardTitle;
+            document.getElementById('dashboardTabProfile').textContent = t.dashboardTabProfile;
+            document.getElementById('dashboardTabOrders').textContent = t.dashboardTabOrders;
+            document.getElementById('dashboardTabLogout').textContent = t.dashboardTabLogout;
+            document.getElementById('profileSectionTitle').textContent = t.profileSectionTitle;
+            document.getElementById('labelProfileFirstName').textContent = t.labelProfileFirstName;
+            document.getElementById('labelProfileLastName').textContent = t.labelProfileLastName;
+            document.getElementById('labelProfileEmail').textContent = t.labelProfileEmail;
+            document.getElementById('labelProfilePhone').textContent = t.labelProfilePhone;
+            document.getElementById('profileAddressTitle').textContent = t.profileAddressTitle;
+            document.getElementById('labelProfileAddress').textContent = t.labelProfileAddress;
+            document.getElementById('labelProfileAddress2').textContent = t.labelProfileAddress2;
+            document.getElementById('labelProfileCity').textContent = t.labelProfileCity;
+            document.getElementById('labelProfilePostal').textContent = t.labelProfilePostal;
+            document.getElementById('labelProfileCountry').textContent = t.labelProfileCountry;
+            document.getElementById('btnSaveProfile').textContent = t.btnSaveProfile;
+            document.getElementById('ordersSectionTitle').textContent = t.ordersSectionTitle;
+            document.getElementById('ordersEmptyText').textContent = t.ordersEmptyText;
+            
             // Update checkout translations
             document.getElementById('checkoutTitle').querySelector('span').textContent = t.checkoutTitle;
             document.getElementById('checkoutPersonalTitle').textContent = t.checkoutPersonalTitle;
@@ -4754,23 +5865,39 @@
         }
 
         function buyProduct(productName) {
-            // Mapping des informations produits
+            // Trouver la carte produit correspondante pour récupérer l'image réelle
+            const productCards = document.querySelectorAll('.product-card');
+            let productImage = null;
+            
+            for (let card of productCards) {
+                const nameElement = card.querySelector('.product-name');
+                if (nameElement && nameElement.textContent.trim() === productName) {
+                    const imgElement = card.querySelector('.product-icon img');
+                    if (imgElement && imgElement.src) {
+                        productImage = imgElement.src;
+                        break;
+                    }
+                }
+            }
+            
+            // Mapping des informations produits (sans images placeholder)
             const productInfo = {
-                'BPC-157': { price: 39.99, size: '10mg', image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iIzFEOUJGMCIgb3BhY2l0eT0iMC4yIi8+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIzMCIgZmlsbD0iIzFEOUJGMCIgb3BhY2l0eT0iMC40Ii8+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIyMCIgZmlsbD0iIzFEOUJGMCIgb3BhY2l0eT0iMC42Ii8+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIxMCIgZmlsbD0iIzFEOUJGMCIvPgo8L3N2Zz4=' },
-                'CJC-1295': { price: 44.99, size: '10mg', image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iIzFEOUJGMCIgb3BhY2l0eT0iMC4yIi8+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIzMCIgZmlsbD0iIzFEOUJGMCIgb3BhY2l0eT0iMC40Ii8+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIyMCIgZmlsbD0iIzFEOUJGMCIgb3BhY2l0eT0iMC42Ii8+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIxMCIgZmlsbD0iIzFEOUJGMCIvPgo8L3N2Zz4=' },
-                'CP10': { price: 49.99, size: '5mg', image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iIzFEOUJGMCIgb3BhY2l0eT0iMC4yIi8+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIzMCIgZmlsbD0iIzFEOUJGMCIgb3BhY2l0eT0iMC40Ii8+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIyMCIgZmlsbD0iIzFEOUJGMCIgb3BhY2l0eT0iMC42Ii8+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIxMCIgZmlsbD0iIzFEOUJGMCIvPgo8L3N2Zz4=' },
-                'GHK-Cu': { price: 49.99, size: '50mg', image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iIzFEOUJGMCIgb3BhY2l0eT0iMC4yIi8+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIzMCIgZmlsbD0iIzFEOUJGMCIgb3BhY2l0eT0iMC40Ii8+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIyMCIgZmlsbD0iIzFEOUJGMCIgb3BhY2l0eT0iMC42Ii8+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIxMCIgZmlsbD0iIzFEOUJGMCIvPgo8L3N2Zz4=' },
-                'GLOW': { price: 54.99, size: '35mg', image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iIzFEOUJGMCIgb3BhY2l0eT0iMC4yIi8+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIzMCIgZmlsbD0iIzFEOUJGMCIgb3BhY2l0eT0iMC40Ii8+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIyMCIgZmlsbD0iIzFEOUJGMCIgb3BhY2l0eT0iMC42Ii8+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIxMCIgZmlsbD0iIzFEOUJGMCIvPgo8L3N2Zz4=' },
-                'GLP (Retatrutide)': { price: 49.99, size: '10mg', image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iIzFEOUJGMCIgb3BhY2l0eT0iMC4yIi8+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIzMCIgZmlsbD0iIzFEOUJGMCIgb3BhY2l0eT0iMC40Ii8+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIyMCIgZmlsbD0iIzFEOUJGMCIgb3BhY2l0eT0iMC42Ii8+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIxMCIgZmlsbD0iIzFEOUJGMCIvPgo8L3N2Zz4=' },
+                'BPC-157': { price: 39.99, size: '10mg' },
+                'CJC-1295': { price: 44.99, size: '10mg' },
+                'CP10': { price: 49.99, size: '5mg' },
+                'GHK-Cu': { price: 49.99, size: '50mg' },
+                'GLOW': { price: 54.99, size: '35mg' },
+                'GLP (Retatrutide)': { price: 49.99, size: '10mg' },
                 // Permettre l'appel buyProduct('Retatrutide') depuis la carte
-                'Retatrutide': { price: 49.99, size: '10mg', image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iIzFEOUJGMCIgb3BhY2l0eT0iMC4yIi8+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIzMCIgZmlsbD0iIzFEOUJGMCIgb3BhY2l0eT0iMC40Ii8+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIyMCIgZmlsbD0iIzFEOUJGMCIgb3BhY2l0eT0iMC42Ii8+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIxMCIgZmlsbD0iIzFEOUJGMCIvPgo8L3N2Zz4=' },
-                'Ipamorelin': { price: 44.99, size: '10mg', image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iIzFEOUJGMCIgb3BhY2l0eT0iMC4yIi8+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIzMCIgZmlsbD0iIzFEOUJGMCIgb3BhY2l0eT0iMC40Ii8+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIyMCIgZmlsbD0iIzFEOUJGMCIgb3BhY2l0eT0iMC42Ii8+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIxMCIgZmlsbD0iIzFEOUJGMCIvPgo8L3N2Zz4=' },
-                'Tesamorelin': { price: 44.99, size: '10mg', image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iIzFEOUJGMCIgb3BhY2l0eT0iMC4yIi8+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIzMCIgZmlsbD0iIzFEOUJGMCIgb3BhY2l0eT0iMC40Ii8+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIyMCIgZmlsbD0iIzFEOUJGMCIgb3BhY2l0eT0iMC42Ii8+CiAgICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIxMCIgZmlsbD0iIzFEOUJGMCIvPgo8L3N2Zz4=' }
+                'Retatrutide': { price: 49.99, size: '10mg' },
+                'Ipamorelin': { price: 44.99, size: '10mg' },
+                'Tesamorelin': { price: 44.99, size: '10mg' }
             };
             
             const product = productInfo[productName];
             if (product) {
-                addToCart(productName, product.price, product.size, product.image);
+                // Utiliser l'image réelle trouvée, ou null si non trouvée
+                addToCart(productName, product.price, product.size, productImage);
                 // Afficher un message de confirmation
                 const t = translations[currentLang];
                 showNotification(t.addedToCart || '✓ Produit ajouté au panier', 'success');
@@ -4917,6 +6044,11 @@
                 closeAccount();
             }
             
+            const dashboardModal = document.getElementById('dashboardModal');
+            if (event.target === dashboardModal) {
+                closeDashboard();
+            }
+            
             const checkoutModal = document.getElementById('checkoutModal');
             if (event.target === checkoutModal) {
                 closeCheckout();
@@ -4936,53 +6068,6 @@
 
         
 
-        // Initialize EmailJS
-        (function() {
-            emailjs.init("7eqj2mK9qj1RaWlHq");
-        })();
-
-        function handleSubmit(event) {
-            event.preventDefault();
-            const t = translations[currentLang];
-            const submitBtn = document.getElementById('submitBtn');
-            const originalText = submitBtn.textContent;
-            
-            // Désactiver le bouton et afficher un message de chargement
-            submitBtn.disabled = true;
-            submitBtn.textContent = currentLang === 'fr' ? 'Envoi en cours...' : 'Sending...';
-            
-            // Récupérer les valeurs du formulaire
-            const formData = {
-                from_name: document.getElementById('name').value,
-                from_email: document.getElementById('email').value,
-                message: document.getElementById('message').value
-            };
-            
-            // Envoyer l'email via EmailJS
-            emailjs.send('service_dlxoage', 'template_i0akca4', {
-                from_name: formData.from_name,
-                from_email: formData.from_email,
-                message: formData.message,
-                to_email: 'support@evo-labs.fr'
-            })
-            .then(function(response) {
-                // Succès
-                showNotification(t.successMsg || 'Message envoyé avec succès!', 'success');
-                event.target.reset();
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalText;
-            }, function(error) {
-                // Erreur
-                showNotification(
-                    currentLang === 'fr' 
-                        ? 'Erreur lors de l\'envoi du message. Veuillez réessayer ou contactez-nous directement à support@evo-labs.fr' 
-                        : 'Error sending message. Please try again or contact us directly at support@evo-labs.fr',
-                    'error'
-                );
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalText;
-            });
-        }
 
         // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -5009,9 +6094,10 @@
 
         // Legal Pages Content
         const legalPagesContent = {
-            'mentions': {
-                title: 'Mentions légales',
-                content: `
+            fr: {
+                'mentions': {
+                    title: 'Mentions légales',
+                    content: `
                     <h3>⚖️ Mentions légales – Evo Labs Research UG</h3>
                     
                     <h3>Éditeur du site</h3>
@@ -5098,6 +6184,99 @@
                     
                     <p>L'utilisateur peut gérer ou refuser les cookies via la bannière de consentement affichée à la première visite.</p>
                 `
+                }
+            },
+            en: {
+                'mentions': {
+                    title: 'Legal Notice',
+                    content: `
+                    <h3>⚖️ Legal Notice – Evo Labs Research UG</h3>
+                    
+                    <h3>Website Publisher</h3>
+                    <p>
+                        <strong>Evo Labs Research UG</strong><br>
+                        Registered Office: Munich, Germany<br>
+                        E-mail: support@evo-labs.fr<br>
+                        Website: https://evo-labs.fr
+                    </p>
+                    <p>Legal form: UG (Unternehmergesellschaft)</p>
+                    
+                    <h3>Intellectual Property</h3>
+                    <p>All elements present on the site (texts, visuals, logos, brands, source codes, etc.) are the exclusive property of Evo Labs Research UG.</p>
+                    <p>Any unauthorized reproduction or use is prohibited.</p>
+                    
+                    <h3>Website Purpose</h3>
+                    <p>Evo Labs Research UG exclusively markets compounds intended for scientific research, not intended for human, veterinary, or medical consumption.</p>
+                    <p>The products sold are labeled "For research purposes only" and must not be used as supplements, treatments, or substances intended for human use.</p>
+                    
+                    <h3>Liability</h3>
+                    <p>The user acknowledges being informed that the products offered are not foodstuffs, dietary supplements, or medical products.</p>
+                    <p>Evo Labs Research UG cannot be held responsible for non-compliant use of its products.</p>
+                `
+                },
+                'cgv': {
+                    title: 'Terms & Conditions',
+                    content: `
+                    <h3>💳 Terms & Conditions</h3>
+                    
+                    <h3>1. Scope</h3>
+                    <p>These conditions apply to all sales concluded via the evo-labs.fr website.</p>
+                    
+                    <h3>2. Products</h3>
+                    <p>The products sold are intended exclusively for scientific and analytical research.</p>
+                    <p>The information provided on the site does not constitute an incentive to consumption.</p>
+                    
+                    <h3>3. Prices</h3>
+                    <p>Displayed prices are inclusive of all taxes (VAT included).</p>
+                    <p>Shipping costs are calculated at checkout, free shipping for orders over €90.</p>
+                    
+                    <h3>4. Payment</h3>
+                    <p>Payment is made via the secure Stripe platform (credit card, Apple Pay, Google Pay).</p>
+                    <p>Orders are considered validated after payment confirmation.</p>
+                    
+                    <h3>5. Delivery</h3>
+                    <p>Deliveries are made by DPD within the European Union.</p>
+                    <p>Evo Labs Research UG cannot be held responsible for delays attributable to the carrier or customs.</p>
+                    
+                    <h3>6. No right of withdrawal / return / refund</h3>
+                    <p>Given the nature of the products (research substances, sealed, non-reusable for safety and compliance reasons), no return, exchange, or refund will be accepted once the order is validated.</p>
+                    <p>By placing an order, the customer expressly acknowledges waiving any right of withdrawal.</p>
+                    
+                    <h3>7. Personal Data</h3>
+                    <p>Collected data is used solely for order processing.</p>
+                    <p>No personal data is sold or transmitted to third parties for commercial purposes.</p>
+                    <p>In accordance with GDPR, any user can request deletion or rectification of their data by contacting: support@evo-labs.fr</p>
+                `
+                },
+                'privacy': {
+                    title: 'Privacy Policy (GDPR)',
+                    content: `
+                    <h3>🔐 Privacy Policy (GDPR)</h3>
+                    
+                    <p>Evo Labs Research UG is committed to protecting its users' personal data.</p>
+                    
+                    <p>The information collected (name, address, e-mail, payment data) is strictly necessary for order management and customer communication.</p>
+                    
+                    <p>Any request must be addressed to: support@evo-labs.fr</p>
+                    
+                    <p>Data is hosted on secure servers in the European Union and retained for a maximum period of 5 years.</p>
+                `
+                },
+                'cookies': {
+                    title: 'Cookie Policy',
+                    content: `
+                    <h3>🍪 Cookie Policy</h3>
+                    
+                    <p>The site uses cookies for:</p>
+                    <ul>
+                        <li>Analyzing traffic (Google Analytics)</li>
+                        <li>Improving user experience (language, cart, preferences)</li>
+                        <li>Tracking advertising conversions (Meta Pixel)</li>
+                    </ul>
+                    
+                    <p>The user can manage or refuse cookies via the consent banner displayed on the first visit.</p>
+                `
+                }
             }
         };
 
@@ -5107,9 +6286,11 @@
             const title = document.getElementById('legalModalTitle');
             const body = document.getElementById('legalModalBody');
             
-            if (legalPagesContent[pageType]) {
-                title.textContent = legalPagesContent[pageType].title;
-                body.innerHTML = legalPagesContent[pageType].content;
+            currentLegalPage = pageType;
+            const langPages = legalPagesContent[currentLang] || legalPagesContent.fr;
+            if (langPages && langPages[pageType]) {
+                title.textContent = langPages[pageType].title;
+                body.innerHTML = langPages[pageType].content;
                 modal.classList.add('active');
                 document.body.style.overflow = 'hidden';
             }
@@ -5120,6 +6301,7 @@
             const modal = document.getElementById('legalModal');
             modal.classList.remove('active');
             document.body.style.overflow = '';
+            currentLegalPage = null;
         }
 
         // Add event listeners to legal links
@@ -5186,7 +6368,7 @@
     <div id="coaPopup" class="coa-popup">
         <div class="coa-popup-content">
             <div class="coa-popup-header">
-                <h2>Certificat d'Analyse (COA)</h2>
+                <h2 id="coaPopupTitle">Certificat d'Analyse (COA)</h2>
                 <button class="coa-close" onclick="closeCoaPopup()">&times;</button>
             </div>
             <div class="coa-certificate-container">
@@ -5196,7 +6378,7 @@
                      id="coaCertificateImage">
             </div>
             <div style="margin-top: 2rem; text-align: center;">
-                <button class="btn" onclick="closeCoaPopup()">Fermer</button>
+                <button class="btn" id="coaPopupCloseBtn" onclick="closeCoaPopup()">Fermer</button>
             </div>
         </div>
     </div>
