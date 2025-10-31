@@ -3609,20 +3609,6 @@
                             <span id="checkoutShippingLabel">Livraison</span>
                             <span id="checkoutShippingValue">Gratuite</span>
                         </div>
-                        <div class="summary-item" id="promoCodeSection" style="display: none;">
-                            <span id="checkoutPromoLabel">Code promo</span>
-                            <span id="checkoutPromoValue" style="color: #10b981;">-0,00 €</span>
-                        </div>
-                        <div class="form-group" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
-                            <label for="promoCode" id="labelPromoCode">Code promo (optionnel)</label>
-                            <div style="display: flex; gap: 0.5rem;">
-                                <input type="text" id="promoCode" placeholder="Entrez votre code" style="flex: 1;" onkeypress="if(event.key === 'Enter') { event.preventDefault(); applyPromoCode(); }">
-                                <button type="button" class="btn" id="btnApplyPromo" onclick="applyPromoCode()" style="padding: 0.75rem 1.5rem; white-space: nowrap;">
-                                    <span id="btnPromoText">Appliquer</span>
-                                </button>
-                            </div>
-                            <div id="promoCodeMessage" style="margin-top: 0.5rem; font-size: 0.875rem;"></div>
-                        </div>
                         <div class="summary-item">
                             <span id="checkoutTotalLabel">Total</span>
                             <span id="checkoutTotalValue">0,00 €</span>
@@ -3939,6 +3925,25 @@
                     <p class="product-disclaimer">For research purposes only – Not for human use</p>
                 </div>
             </div>
+            
+            <!-- PRODUIT DE TEST -->
+            <div class="product-card" onclick="openProductModal(this)" style="border: 2px solid #ff6b00;">
+                <div class="product-icon">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDIwMCAzMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJ0ZXN0R3JhZCIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNmZmY7c3RvcC1vcGFjaXR5OjAuMyIvPjxzdG9wIG9mZnNldD0iNTAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZmZmO3N0b3Atb3BhY2l0eTowLjEiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNmZmY7c3RvcC1vcGFjaXR5OjAuMyIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjZmY2YjAwIi8+PGVsbGlwc2UgY3g9IjEwMCIgY3k9IjQwIiByeD0iMjUiIHJ5PSI4IiBmaWxsPSIjZmY2YjAwIi8+PHJlY3QgeD0iNzUiIHk9IjM1IiB3aWR0aD0iNTAiIGhlaWdodD0iMTUiIGZpbGw9IiNmZjZiMDAiLz48ZWxsaXBzZSBjeD0iMTAwIiBjeT0iNTAiIHJ4PSIyNSIgcnk9IjgiIGZpbGw9IiNmZjUwMDAiLz48cmVjdCB4PSI3MCIgeT0iNTAiIHdpZHRoPSI2MCIgaGVpZ2h0PSIxODAiIGZpbGw9IiNlOGY0ZjgiIHN0cm9rZT0iI2IzZDRlNSIgc3Ryb2tlLXdpZHRoPSIyIiByeD0iNSIvPjxyZWN0IHg9IjcwIiB5PSI1MCIgd2lkdGg9IjIwIiBoZWlnaHQ9IjE4MCIgZmlsbD0idXJsKCN0ZXN0R3JhZCkiIG9wYWNpdHk9IjAuNiIgcng9IjUiLz48cmVjdCB4PSI3NSIgeT0iMTUwIiB3aWR0aD0iNTAiIGhlaWdodD0iNzAiIGZpbGw9IiNmZjZiMDAiIG9wYWNpdHk9IjAuNyIgcng9IjMiLz48ZWxsaXBzZSBjeD0iMTAwIiBjeT0iMTUwIiByeD0iMjUiIHJ5PSI1IiBmaWxsPSIjZmY1MDAwIiBvcGFjaXR5PSIwLjgiLz48ZWxsaXBzZSBjeD0iMTAwIiBjeT0iMjMwIiByeD0iMzAiIHJ5PSIxMCIgZmlsbD0iI2IzZDRlNSIvPjxyZWN0IHg9IjcwIiB5PSIyMzAiIHdpZHRoPSI2MCIgaGVpZ2h0PSIxNSIgZmlsbD0iI2IzZDRlNSIvPjxlbGxpcHNlIGN4PSIxMDAiIGN5PSIyNDUiIHJ4PSIzMCIgcnk9IjEwIiBmaWxsPSIjOTVjMmQ4Ii8+PHJlY3QgeD0iNzUiIHk9IjgwIiB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIGZpbGw9IndoaXRlIiBzdHJva2U9IiNmZjZiMDAiIHN0cm9rZS13aWR0aD0iMSIgcng9IjMiLz48dGV4dCB4PSIxMDAiIHk9IjEwMCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iI2ZmNTAwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+VEVTVDwvdGV4dD48dGV4dCB4PSIxMDAiIHk9IjExNSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmaWxsPSIjNjY2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4xMG1nPC90ZXh0Pjwvc3ZnPg==" alt="Produit Test" style="width: 100%; height: 100%; object-fit: contain;">
+                </div>
+                <div class="product-info">
+                    <div class="product-header">
+                        <div class="product-name">Produit Test</div>
+                        <div class="purity-badge">≥99%</div>
+                    </div>
+                    <p class="product-description" id="testProductDesc">Produit de test pour vérifier le processus de paiement complet. Prix à 1€ uniquement pour les tests.</p>
+                    <div class="product-footer">
+                        <div class="product-price">1,00€</div>
+                        <button class="btn btn-add-cart" onclick="event.stopPropagation(); buyProduct('Produit Test')">Ajouter au panier</button>
+                    </div>
+                    <p class="product-disclaimer">For research purposes only – Not for human use</p>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -4160,6 +4165,7 @@
                 glpDesc: 'Triple agoniste peptidique utilisé dans les recherches sur le métabolisme énergétique et la régulation hormonale.',
                 ipamorelinDesc: 'Pentapeptide sélectif utilisé dans les protocoles de recherche sur les mécanismes de sécrétion et de régulation hormonale.',
                 tesDesc: 'Analogue synthétique de 44 acides aminés utilisé dans les études sur les voies métaboliques et la régulation lipidique.',
+                testProductDesc: 'Produit de test pour vérifier le processus de paiement complet. Prix à 1€ uniquement pour les tests.',
                 btnBuy: 'Ajouter au panier',
                 addedToCart: '✓ Produit ajouté au panier',
                 disclaimer: 'For research purposes only – Not for human use',
@@ -4284,9 +4290,6 @@
                 checkoutSummaryTitle: 'Récapitulatif',
                 checkoutSubtotalLabel: 'Sous-total',
                 checkoutShippingLabel: 'Livraison',
-                labelPromoCode: 'Code promo (optionnel)',
-                checkoutPromoLabel: 'Code promo',
-                btnPromoText: 'Appliquer',
                 checkoutShippingValue: 'Gratuite',
                 checkoutTotalLabel: 'Total',
                 btnCheckoutBack: 'Retour',
@@ -4319,6 +4322,7 @@
                 glpDesc: 'Triple agonist peptide used in research on energy metabolism and hormonal regulation.',
                 ipamorelinDesc: 'Selective pentapeptide used in research protocols on secretion and hormonal regulation mechanisms.',
                 tesDesc: '44 amino acid synthetic analog used in studies on metabolic pathways and lipid regulation.',
+                testProductDesc: 'Test product to verify the complete payment process. Price at 1€ for testing purposes only.',
                 btnBuy: 'Add to cart',
                 addedToCart: '✓ Product added to cart',
                 disclaimer: 'For research purposes only – Not for human use',
@@ -4443,9 +4447,6 @@
                 checkoutSummaryTitle: 'Summary',
                 checkoutSubtotalLabel: 'Subtotal',
                 checkoutShippingLabel: 'Shipping',
-                labelPromoCode: 'Promo code (optional)',
-                checkoutPromoLabel: 'Promo code',
-                btnPromoText: 'Apply',
                 checkoutShippingValue: 'Free',
                 checkoutTotalLabel: 'Total',
                 btnCheckoutBack: 'Back',
@@ -4554,7 +4555,8 @@
             { name: 'GLOW', price: 109.99, size: '35mg', image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDIwMCAzMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnbGFzc0dyYWQ1IiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6I2ZmZmZmZjtzdG9wLW9wYWNpdHk6MC4zIi8+PHN0b3Agb2Zmc2V0PSI1MCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNmZmZmZmY7c3RvcC1vcGFjaXR5OjAuMSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6I2ZmZmZmZjtzdG9wLW9wYWNpdHk6MC4zIi8+PC9saW5lYXJHcmFkaWVudD48cmFkaWFsR3JhZGllbnQgaWQ9Imdsb3ciPjxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNmZmQ3MDA7c3RvcC1vcGFjaXR5OjAuOCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6I2ZmYTcwMDtzdG9wLW9wYWNpdHk6MC42Ii8+PC9yYWRpYWxHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIzMDAiIGZpbGw9IiNmNWY1ZjUiLz48ZWxsaXBzZSBjeD0iMTAwIiBjeT0iNDAiIHJ4PSIyNSIgcnk9IjgiIGZpbGw9IiNmZmE3MDAiLz48cmVjdCB4PSI3NSIgeT0iMzUiIHdpZHRoPSI1MCIgaGVpZ2h0PSIxNSIgZmlsbD0iI2ZmYTcwMCIvPjxlbGxpcHNlIGN4PSIxMDAiIGN5PSI1MCIgcng9IjI1IiByeT0iOCIgZmlsbD0iI2ZmOTgwMCIvPjxyZWN0IHg9IjcwIiB5PSI1MCIgd2lkdGg9IjYwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2U4ZjRmOCIgc3Ryb2tlPSIjYjNkNGU1IiBzdHJva2Utd2lkdGg9IjIiIHJ4PSI1Ii8+PHJlY3QgeD0iNzAiIHk9IjUwIiB3aWR0aD0iMjAiIGhlaWdodD0iMTgwIiBmaWxsPSJ1cmwoI2dsYXNzR3JhZDUpIiBvcGFjaXR5PSIwLjYiIHJ4PSI1Ii8+PHJlY3QgeD0iNzUiIHk9IjE1MCIgd2lkdGg9IjUwIiBoZWlnaHQ9IjcwIiBmaWxsPSJ1cmwoI2dsb3cpIiByeD0iMyIvPjxlbGxpcHNlIGN4PSIxMDAiIGN5PSIxNTAiIHJ4PSIyNSIgcnk9IjUiIGZpbGw9IiNmZjk4MDAiIG9wYWNpdHk9IjAuOCIvPjxlbGxpcHNlIGN4PSIxMDAiIGN5PSIyMzAiIHJ4PSIzMCIgcnk9IjEwIiBmaWxsPSIjYjNkNGU1Ii8+PHJlY3QgeD0iNzAiIHk9IjIzMCIgd2lkdGg9IjYwIiBoZWlnaHQ9IjE1IiBmaWxsPSIjYjNkNGU1Ii8+PGVsbGlwc2UgY3g9IjEwMCIgY3k9IjI0NSIgcng9IjMwIiByeT0iMTAiIGZpbGw9IiM5NWMyZDgiLz48cmVjdCB4PSI3NSIgeT0iODAiIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCIgZmlsbD0id2hpdGUiIHN0cm9rZT0iI2ZmYTcwMCIgc3Ryb2tlLXdpZHRoPSIxIiByeD0iMyIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjZmY5ODAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5HTE9XPC90ZXh0Pjx0ZXh0IHg9IjEwMCIgeT0iMTE1IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiM2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPjM1bWc8L3RleHQ+PC9zdmc+' },
             { name: 'GLP (Retatrutide)', price: 129.99, size: '10mg', image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDIwMCAzMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnbGFzc0dyYWQ2IiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6I2ZmZmZmZjtzdG9wLW9wYWNpdHk6MC4zIi8+PHN0b3Agb2Zmc2V0PSI1MCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNmZmZmZmY7c3RvcC1vcGFjaXR5OjAuMSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6I2ZmZmZmZjtzdG9wLW9wYWNpdHk6MC4zIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIzMDAiIGZpbGw9IiNmNWY1ZjUiLz48ZWxsaXBzZSBjeD0iMTAwIiBjeT0iNDAiIHJ4PSIyNSIgcnk9IjgiIGZpbGw9IiM2NjZhZDEiLz48cmVjdCB4PSI3NSIgeT0iMzUiIHdpZHRoPSI1MCIgaGVpZ2h0PSIxNSIgZmlsbD0iIzY2NmFkMSIvPjxlbGxpcHNlIGN4PSIxMDAiIGN5PSI1MCIgcng9IjI1IiByeT0iOCIgZmlsbD0iIzUzNTdiYyIvPjxyZWN0IHg9IjcwIiB5PSI1MCIgd2lkdGg9IjYwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2U4ZjRmOCIgc3Ryb2tlPSIjYjNkNGU1IiBzdHJva2Utd2lkdGg9IjIiIHJ4PSI1Ii8+PHJlY3QgeD0iNzAiIHk9IjUwIiB3aWR0aD0iMjAiIGhlaWdodD0iMTgwIiBmaWxsPSJ1cmwoI2dsYXNzR3JhZDYpIiBvcGFjaXR5PSIwLjYiIHJ4PSI1Ii8+PHJlY3QgeD0iNzUiIHk9IjE1MCIgd2lkdGg9IjUwIiBoZWlnaHQ9IjcwIiBmaWxsPSIjNjY2YWQxIiBvcGFjaXR5PSIwLjciIHJ4PSIzIi8+PGVsbGlwc2UgY3g9IjEwMCIgY3k9IjE1MCIgcng9IjI1IiByeT0iNSIgZmlsbD0iIzUzNTdiYyIgb3BhY2l0eT0iMC44Ii8+PGVsbGlwc2UgY3g9IjEwMCIgY3k9IjIzMCIgcng9IjMwIiByeT0iMTAiIGZpbGw9IiNiM2Q0ZTUiLz48cmVjdCB4PSI3MCIgeT0iMjMwIiB3aWR0aD0iNjAiIGhlaWdodD0iMTUiIGZpbGw9IiNiM2Q0ZTUiLz48ZWxsaXBzZSBjeD0iMTAwIiBjeT0iMjQ1IiByeD0iMzAiIHJ5PSIxMCIgZmlsbD0iIzk1YzJkOCIvPjxyZWN0IHg9Ijc1IiB5PSI4MCIgd2lkdGg9IjUwIiBoZWlnaHQ9IjUwIiBmaWxsPSJ3aGl0ZSIgc3Ryb2tlPSIjNjY2YWQxIiBzdHJva2Utd2lkdGg9IjEiIHJ4PSIzIi8+PHRleHQgeD0iMTAwIiB5PSIxMDAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiM1MzU3YmMiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkdMUDwvdGV4dD48dGV4dCB4PSIxMDAiIHk9IjExNSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmaWxsPSIjNjY2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4xMG1nPC90ZXh0Pjwvc3ZnPg==' },
             { name: 'Ipamorelin', price: 49.99, size: '10mg', image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDIwMCAzMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnbGFzc0dyYWQ3IiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6I2ZmZmZmZjtzdG9wLW9wYWNpdHk6MC4zIi8+PHN0b3Agb2Zmc2V0PSI1MCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNmZmZmZmY7c3RvcC1vcGFjaXR5OjAuMSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6I2ZmZmZmZjtzdG9wLW9wYWNpdHk6MC4zIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIzMDAiIGZpbGw9IiNmNWY1ZjUiLz48ZWxsaXBzZSBjeD0iMTAwIiBjeT0iNDAiIHJ4PSIyNSIgcnk9IjgiIGZpbGw9IiM5QzI3QjAiLz48cmVjdCB4PSI3NSIgeT0iMzUiIHdpZHRoPSI1MCIgaGVpZ2h0PSIxNSIgZmlsbD0iIzlDMjdCMCIvPjxlbGxpcHNlIGN4PSIxMDAiIGN5PSI1MCIgcng9IjI1IiByeT0iOCIgZmlsbD0iIzdiMWZhMiIvPjxyZWN0IHg9IjcwIiB5PSI1MCIgd2lkdGg9IjYwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2U4ZjRmOCIgc3Ryb2tlPSIjYjNkNGU1IiBzdHJva2Utd2lkdGg9IjIiIHJ4PSI1Ii8+PHJlY3QgeD0iNzAiIHk9IjUwIiB3aWR0aD0iMjAiIGhlaWdodD0iMTgwIiBmaWxsPSJ1cmwoI2dsYXNzR3JhZDcpIiBvcGFjaXR5PSIwLjYiIHJ4PSI1Ii8+PHJlY3QgeD0iNzUiIHk9IjE1MCIgd2lkdGg9IjUwIiBoZWlnaHQ9IjcwIiBmaWxsPSIjOUMyN0IwIiBvcGFjaXR5PSIwLjciIHJ4PSIzIi8+PGVsbGlwc2UgY3g9IjEwMCIgY3k9IjE1MCIgcng9IjI1IiByeT0iNSIgZmlsbD0iIzdiMWZhMiIgb3BhY2l0eT0iMC44Ii8+PGVsbGlwc2UgY3g9IjEwMCIgY3k9IjIzMCIgcng9IjMwIiByeT0iMTAiIGZpbGw9IiNiM2Q0ZTUiLz48cmVjdCB4PSI3MCIgeT0iMjMwIiB3aWR0aD0iNjAiIGhlaWdodD0iMTUiIGZpbGw9IiNiM2Q0ZTUiLz48ZWxsaXBzZSBjeD0iMTAwIiBjeT0iMjQ1IiByeD0iMzAiIHJ5PSIxMCIgZmlsbD0iIzk1YzJkOCIvPjxyZWN0IHg9Ijc1IiB5PSI4MCIgd2lkdGg9IjUwIiBoZWlnaHQ9IjUwIiBmaWxsPSJ3aGl0ZSIgc3Ryb2tlPSIjOUMyN0IwIiBzdHJva2Utd2lkdGg9IjEiIHJ4PSIzIi8+PHRleHQgeD0iMTAwIiB5PSI5NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzdiMWZhMiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SVBBTTwvdGV4dD48dGV4dCB4PSIxMDAiIHk9IjExNSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmaWxsPSIjNjY2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4xMG1nPC90ZXh0Pjwvc3ZnPg==' },
-            { name: 'Tesamorelin', price: 69.99, size: '10mg', image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDIwMCAzMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnbGFzc0dyYWQ4IiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6I2ZmZmZmZjtzdG9wLW9wYWNpdHk6MC4zIi8+PHN0b3Agb2Zmc2V0PSI1MCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNmZmZmZmY7c3RvcC1vcGFjaXR5OjAuMSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6I2ZmZmZmZjtzdG9wLW9wYWNpdHk6MC4zIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIzMDAiIGZpbGw9IiNmNWY1ZjUiLz48ZWxsaXBzZSBjeD0iMTAwIiBjeT0iNDAiIHJ4PSIyNSIgcnk9IjgiIGZpbGw9IiM0Q0FGNTAiLz48cmVjdCB4PSI3NSIgeT0iMzUiIHdpZHRoPSI1MCIgaGVpZ2h0PSIxNSIgZmlsbD0iIzRDQUY1MCIvPjxlbGxpcHNlIGN4PSIxMDAiIGN5PSI1MCIgcng9IjI1IiByeT0iOCIgZmlsbD0iIzM4OGUzYyIvPjxyZWN0IHg9IjcwIiB5PSI1MCIgd2lkdGg9IjYwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2U4ZjRmOCIgc3Ryb2tlPSIjYjNkNGU1IiBzdHJva2Utd2lkdGg9IjIiIHJ4PSI1Ii8+PHJlY3QgeD0iNzAiIHk9IjUwIiB3aWR0aD0iMjAiIGhlaWdodD0iMTgwIiBmaWxsPSJ1cmwoI2dsYXNzR3JhZDgpIiBvcGFjaXR5PSIwLjYiIHJ4PSI1Ii8+PHJlY3QgeD0iNzUiIHk9IjE1MCIgd2lkdGg9IjUwIiBoZWlnaHQ9IjcwIiBmaWxsPSIjNENBRjUwIiBvcGFjaXR5PSIwLjciIHJ4PSIzIi8+PGVsbGlwc2UgY3g9IjEwMCIgY3k9IjE1MCIgcng9IjI1IiByeT0iNSIgZmlsbD0iIzM4OGUzYyIgb3BhY2l0eT0iMC44Ii8+PGVsbGlwc2UgY3g9IjEwMCIgY3k9IjIzMCIgcng9IjMwIiByeT0iMTAiIGZpbGw9IiNiM2Q0ZTUiLz48cmVjdCB4PSI3MCIgeT0iMjMwIiB3aWR0aD0iNjAiIGhlaWdodD0iMTUiIGZpbGw9IiNiM2Q0ZTUiLz48ZWxsaXBzZSBjeD0iMTAwIiBjeT0iMjQ1IiByeD0iMzAiIHJ5PSIxMCIgZmlsbD0iIzk1YzJkOCIvPjxyZWN0IHg9Ijc1IiB5PSI4MCIgd2lkdGg9IjUwIiBoZWlnaHQ9IjUwIiBmaWxsPSJ3aGl0ZSIgc3Ryb2tlPSIjNENBRjUwIiBzdHJva2Utd2lkdGg9IjEiIHJ4PSIzIi8+PHRleHQgeD0iMTAwIiB5PSI5NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzM4OGUzYyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+VEVTQTWVDPC90ZXh0Pjx0ZXh0IHg9IjEwMCIgeT0iMTE1IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiM2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPjEwbWc8L3RleHQ+PC9zdmc+' }
+            { name: 'Tesamorelin', price: 69.99, size: '10mg', image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDIwMCAzMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnbGFzc0dyYWQ4IiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6I2ZmZmZmZjtzdG9wLW9wYWNpdHk6MC4zIi8+PHN0b3Agb2Zmc2V0PSI1MCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNmZmZmZmY7c3RvcC1vcGFjaXR5OjAuMSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6I2ZmZmZmZjtzdG9wLW9wYWNpdHk6MC4zIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIzMDAiIGZpbGw9IiNmNWY1ZjUiLz48ZWxsaXBzZSBjeD0iMTAwIiBjeT0iNDAiIHJ4PSIyNSIgcnk9IjgiIGZpbGw9IiM0Q0FGNTAiLz48cmVjdCB4PSI3NSIgeT0iMzUiIHdpZHRoPSI1MCIgaGVpZ2h0PSIxNSIgZmlsbD0iIzRDQUY1MCIvPjxlbGxpcHNlIGN4PSIxMDAiIGN5PSI1MCIgcng9IjI1IiByeT0iOCIgZmlsbD0iIzM4OGUzYyIvPjxyZWN0IHg9IjcwIiB5PSI1MCIgd2lkdGg9IjYwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2U4ZjRmOCIgc3Ryb2tlPSIjYjNkNGU1IiBzdHJva2Utd2lkdGg9IjIiIHJ4PSI1Ii8+PHJlY3QgeD0iNzAiIHk9IjUwIiB3aWR0aD0iMjAiIGhlaWdodD0iMTgwIiBmaWxsPSJ1cmwoI2dsYXNzR3JhZDgpIiBvcGFjaXR5PSIwLjYiIHJ4PSI1Ii8+PHJlY3QgeD0iNzUiIHk9IjE1MCIgd2lkdGg9IjUwIiBoZWlnaHQ9IjcwIiBmaWxsPSIjNENBRjUwIiBvcGFjaXR5PSIwLjciIHJ4PSIzIi8+PGVsbGlwc2UgY3g9IjEwMCIgY3k9IjE1MCIgcng9IjI1IiByeT0iNSIgZmlsbD0iIzM4OGUzYyIgb3BhY2l0eT0iMC44Ii8+PGVsbGlwc2UgY3g9IjEwMCIgY3k9IjIzMCIgcng9IjMwIiByeT0iMTAiIGZpbGw9IiNiM2Q0ZTUiLz48cmVjdCB4PSI3MCIgeT0iMjMwIiB3aWR0aD0iNjAiIGhlaWdodD0iMTUiIGZpbGw9IiNiM2Q0ZTUiLz48ZWxsaXBzZSBjeD0iMTAwIiBjeT0iMjQ1IiByeD0iMzAiIHJ5PSIxMCIgZmlsbD0iIzk1YzJkOCIvPjxyZWN0IHg9Ijc1IiB5PSI4MCIgd2lkdGg9IjUwIiBoZWlnaHQ9IjUwIiBmaWxsPSJ3aGl0ZSIgc3Ryb2tlPSIjNENBRjUwIiBzdHJva2Utd2lkdGg9IjEiIHJ4PSIzIi8+PHRleHQgeD0iMTAwIiB5PSI5NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzM4OGUzYyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+VEVTQTWVDPC90ZXh0Pjx0ZXh0IHg9IjEwMCIgeT0iMTE1IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiM2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPjEwbWc8L3RleHQ+PC9zdmc+' },
+            { name: 'Produit Test', price: 1.00, size: '10mg', image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDIwMCAzMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJ0ZXN0R3JhZCIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNmZmY7c3RvcC1vcGFjaXR5OjAuMyIvPjxzdG9wIG9mZnNldD0iNTAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZmZmO3N0b3Atb3BhY2l0eTowLjEiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNmZmY7c3RvcC1vcGFjaXR5OjAuMyIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjZmY2YjAwIi8+PGVsbGlwc2UgY3g9IjEwMCIgY3k9IjQwIiByeD0iMjUiIHJ5PSI4IiBmaWxsPSIjZmY2YjAwIi8+PHJlY3QgeD0iNzUiIHk9IjM1IiB3aWR0aD0iNTAiIGhlaWdodD0iMTUiIGZpbGw9IiNmZjZiMDAiLz48ZWxsaXBzZSBjeD0iMTAwIiBjeT0iNTAiIHJ4PSIyNSIgcnk9IjgiIGZpbGw9IiNmZjUwMDAiLz48cmVjdCB4PSI3MCIgeT0iNTAiIHdpZHRoPSI2MCIgaGVpZ2h0PSIxODAiIGZpbGw9IiNlOGY0ZjgiIHN0cm9rZT0iI2IzZDRlNSIgc3Ryb2tlLXdpZHRoPSIyIiByeD0iNSIvPjxyZWN0IHg9IjcwIiB5PSI1MCIgd2lkdGg9IjIwIiBoZWlnaHQ9IjE4MCIgZmlsbD0idXJsKCN0ZXN0R3JhZCkiIG9wYWNpdHk9IjAuNiIgcng9IjUiLz48cmVjdCB4PSI3NSIgeT0iMTUwIiB3aWR0aD0iNTAiIGhlaWdodD0iNzAiIGZpbGw9IiNmZjZiMDAiIG9wYWNpdHk9IjAuNyIgcng9IjMiLz48ZWxsaXBzZSBjeD0iMTAwIiBjeT0iMTUwIiByeD0iMjUiIHJ5PSI1IiBmaWxsPSIjZmY1MDAwIiBvcGFjaXR5PSIwLjgiLz48ZWxsaXBzZSBjeD0iMTAwIiBjeT0iMjMwIiByeD0iMzAiIHJ5PSIxMCIgZmlsbD0iI2IzZDRlNSIvPjxyZWN0IHg9IjcwIiB5PSIyMzAiIHdpZHRoPSI2MCIgaGVpZ2h0PSIxNSIgZmlsbD0iI2IzZDRlNSIvPjxlbGxpcHNlIGN4PSIxMDAiIGN5PSIyNDUiIHJ4PSIzMCIgcnk9IjEwIiBmaWxsPSIjOTVjMmQ4Ii8+PHJlY3QgeD0iNzUiIHk9IjgwIiB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIGZpbGw9IndoaXRlIiBzdHJva2U9IiNmZjZiMDAiIHN0cm9rZS13aWR0aD0iMSIgcng9IjMiLz48dGV4dCB4PSIxMDAiIHk9IjEwMCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iI2ZmNTAwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+VEVTVDwvdGV4dD48dGV4dCB4PSIxMDAiIHk9IjExNSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmaWxsPSIjNjY2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4xMG1nPC90ZXh0Pjwvc3ZnPg==' }
         ];
 
         // Load user from localStorage
@@ -5018,56 +5020,9 @@
             document.body.style.overflow = 'hidden';
         }
 
-        // Variable globale pour le code promo
-        let appliedPromoCode = null;
-        const PROMO_CODES = {
-            'TEST99': { discount: 0.99, label: 'TEST99' } // 99% de réduction
-        };
-
         function closeCheckout() {
             document.getElementById('checkoutModal').classList.remove('active');
             document.body.style.overflow = 'auto';
-            // Reset promo code when closing checkout
-            appliedPromoCode = null;
-            const promoInput = document.getElementById('promoCode');
-            const promoMessage = document.getElementById('promoCodeMessage');
-            if (promoInput) promoInput.value = '';
-            if (promoMessage) {
-                promoMessage.textContent = '';
-                promoMessage.style.color = '';
-            }
-        }
-
-        function applyPromoCode() {
-            const promoInput = document.getElementById('promoCode');
-            const promoMessage = document.getElementById('promoCodeMessage');
-            const code = promoInput.value.trim().toUpperCase();
-            
-            if (!code) {
-                promoMessage.textContent = '';
-                promoMessage.style.color = '';
-                appliedPromoCode = null;
-                updateCheckoutSummary();
-                return;
-            }
-            
-            if (PROMO_CODES[code]) {
-                appliedPromoCode = PROMO_CODES[code];
-                promoMessage.textContent = currentLang === 'fr' 
-                    ? `✓ Code promo appliqué : ${appliedPromoCode.discount * 100}% de réduction`
-                    : `✓ Promo code applied: ${appliedPromoCode.discount * 100}% off`;
-                promoMessage.style.color = '#10b981';
-                promoInput.style.borderColor = '#10b981';
-                updateCheckoutSummary();
-            } else {
-                appliedPromoCode = null;
-                promoMessage.textContent = currentLang === 'fr'
-                    ? '❌ Code promo invalide'
-                    : '❌ Invalid promo code';
-                promoMessage.style.color = '#ef4444';
-                promoInput.style.borderColor = '#ef4444';
-                updateCheckoutSummary();
-            }
         }
 
         function updateCheckoutSummary() {
@@ -5088,31 +5043,16 @@
             // Calculate totals
             const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             const FREE_SHIPPING_THRESHOLD = 90;
-            const shippingCost = 0.60; // 60 centimes pour les tests
-            
-            // Apply promo code discount (99% off)
-            let discountAmount = 0;
-            let finalSubtotal = subtotal;
-            if (appliedPromoCode) {
-                discountAmount = subtotal * appliedPromoCode.discount;
-                finalSubtotal = subtotal - discountAmount;
-            }
-            
-            const total = finalSubtotal + shippingCost;
+            const shippingCost = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : 5;
+            const total = subtotal + shippingCost;
 
             subtotalValue.textContent = `${subtotal.toFixed(2).replace('.', ',')} €`;
             
             // Update shipping display
-            shippingValue.textContent = `${shippingCost.toFixed(2).replace('.', ',')} €`;
-            
-            // Show/hide promo code section
-            const promoSection = document.getElementById('promoCodeSection');
-            const promoValue = document.getElementById('checkoutPromoValue');
-            if (discountAmount > 0) {
-                promoSection.style.display = 'flex';
-                promoValue.textContent = `-${discountAmount.toFixed(2).replace('.', ',')} €`;
+            if (shippingCost === 0) {
+                shippingValue.textContent = t.checkoutShippingValue || 'Gratuite';
             } else {
-                promoSection.style.display = 'none';
+                shippingValue.textContent = `${shippingCost.toFixed(2).replace('.', ',')} €`;
             }
             
             totalValue.textContent = `${total.toFixed(2).replace('.', ',')} €`;
@@ -5132,24 +5072,13 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        items: orderData.items.map(item => {
-                            // Apply promo discount to each item if code is applied
-                            let itemPrice = item.price;
-                            if (orderData.promoCode && orderData.discountAmount) {
-                                // Calculate proportional discount per item
-                                const itemSubtotal = orderData.items.reduce((sum, i) => sum + (i.price * i.quantity), 0);
-                                const itemDiscountRatio = (item.price * item.quantity) / itemSubtotal;
-                                const itemDiscount = orderData.discountAmount * itemDiscountRatio;
-                                itemPrice = Math.max(0, item.price - (itemDiscount / item.quantity));
-                            }
-                            return {
-                                name: item.name,
-                                description: `${item.size} - ${item.name}`,
-                                amount: Math.round(itemPrice * 100), // Convertir en centimes
-                                currency: 'eur',
-                                quantity: item.quantity
-                            };
-                        }),
+                        items: orderData.items.map(item => ({
+                            name: item.name,
+                            description: `${item.size} - ${item.name}`,
+                            amount: Math.round(item.price * 100), // Convertir en centimes
+                            currency: 'eur',
+                            quantity: item.quantity
+                        })),
                         customer: {
                             email: orderData.customer.email,
                             name: `${orderData.customer.firstName} ${orderData.customer.lastName}`,
@@ -5240,7 +5169,7 @@
                     return `• ${item.quantity}x ${item.name}${item.size ? ` (${item.size})` : ''} - ${itemTotal} €`;
                 }).join('\n');
 
-                const shippingCost = 0.60; // 60 centimes pour les tests
+                const shippingCost = orderData.total >= 90 ? 0 : 5;
                 const subtotal = orderData.total - shippingCost;
 
                 const emailContent = currentLang === 'fr' ? `
@@ -5361,17 +5290,8 @@ The Evo Labs Research UG team
                 // Calculate totals with shipping
                 const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
                 const FREE_SHIPPING_THRESHOLD = 90;
-                const shippingCost = 0.60; // 60 centimes pour les tests
-                
-                // Apply promo code discount (99% off)
-                let discountAmount = 0;
-                let finalSubtotal = subtotal;
-                if (appliedPromoCode) {
-                    discountAmount = subtotal * appliedPromoCode.discount;
-                    finalSubtotal = subtotal - discountAmount;
-                }
-                
-                const total = finalSubtotal + shippingCost;
+                const shippingCost = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : 5;
+                const total = subtotal + shippingCost;
 
                 const orderData = {
                     orderId: orderId,
@@ -5390,11 +5310,8 @@ The Evo Labs Research UG team
                     },
                     items: cart.map(item => ({ ...item })),
                     subtotal: subtotal,
-                    discountAmount: discountAmount,
-                    finalSubtotal: finalSubtotal,
                     shippingCost: shippingCost,
                     total: total,
-                    promoCode: appliedPromoCode ? appliedPromoCode.label : null,
                     orderDate: new Date().toISOString(),
                     userEmail: currentUser ? currentUser.email : document.getElementById('checkoutEmail').value,
                     paymentStatus: 'pending'
@@ -5553,7 +5470,7 @@ The Evo Labs Research UG team
                 // Vider le panier
                 cart = [];
                 saveCart();
-                updateCartCount();
+                updateCartUI();
 
                 // Envoyer l'email de confirmation
                 const emailSent = await sendOrderConfirmationEmail(orderData);
@@ -5918,6 +5835,7 @@ The Evo Labs Research UG team
             setTextContent('glpDesc', t.glpDesc);
             setTextContent('ipamorelinDesc', t.ipamorelinDesc);
             setTextContent('tesDesc', t.tesDesc);
+            setTextContent('testProductDesc', t.testProductDesc);
             
             const buyBtns = document.querySelectorAll('.btn-add-cart');
             buyBtns.forEach(btn => btn.textContent = t.btnBuy);
@@ -6061,9 +5979,6 @@ The Evo Labs Research UG team
             setTextContent('checkoutSummaryTitle', t.checkoutSummaryTitle);
             setTextContent('checkoutSubtotalLabel', t.checkoutSubtotalLabel);
             setTextContent('checkoutShippingLabel', t.checkoutShippingLabel);
-            setTextContent('labelPromoCode', t.labelPromoCode);
-            setTextContent('checkoutPromoLabel', t.checkoutPromoLabel);
-            setTextContent('btnPromoText', t.btnPromoText);
             // checkoutShippingValue est mis à jour dynamiquement dans updateCheckoutSummary()
             const checkoutShippingValue = document.getElementById('checkoutShippingValue');
             if (checkoutShippingValue && !checkoutShippingValue.textContent.includes('€')) {
@@ -6149,6 +6064,10 @@ The Evo Labs Research UG team
                 fr: 'Analogue synthétique de 44 acides aminés utilisé dans les études sur les voies métaboliques et la régulation lipidique. Agoniste du récepteur GHRH avec une stabilité améliorée.',
                 en: '44 amino acid synthetic analog used in studies on metabolic pathways and lipid regulation. GHRH receptor agonist with improved stability.'
             },
+            'Produit Test': {
+                fr: 'Produit de test pour vérifier le processus de paiement complet. Prix à 1€ uniquement pour les tests.',
+                en: 'Test product to verify the complete payment process. Price at 1€ for testing purposes only.'
+            }
         };
 
         function openProductModal(cardElement) {
