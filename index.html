@@ -5767,36 +5767,52 @@ The Evo Labs Research UG team
             document.getElementById('btnEn').classList.toggle('active', currentLang === 'en');
         }
 
+        // Helper function to safely set text content
+        function setTextContent(id, text) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = text;
+            }
+        }
+        
+        // Helper function to safely set innerHTML
+        function setInnerHTML(id, html) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.innerHTML = html;
+            }
+        }
+
         function applyTranslations() {
             const t = translations[currentLang];
             
             // Update banner messages
-            document.getElementById('bannerMessage1Text').textContent = t.bannerMessage1;
-            document.getElementById('bannerMessage2Text').textContent = t.bannerMessage2;
-            document.getElementById('bannerMessage3Text').textContent = t.bannerMessage3;
-            document.getElementById('navHome').textContent = t.navHome;
-            document.getElementById('navProducts').textContent = t.navProducts;
-            document.getElementById('navCOA').textContent = t.navCOA;
-            document.getElementById('navContact').textContent = t.navContact;
+            setTextContent('bannerMessage1Text', t.bannerMessage1);
+            setTextContent('bannerMessage2Text', t.bannerMessage2);
+            setTextContent('bannerMessage3Text', t.bannerMessage3);
+            setTextContent('navHome', t.navHome);
+            setTextContent('navProducts', t.navProducts);
+            setTextContent('navCOA', t.navCOA);
+            setTextContent('navContact', t.navContact);
             
-            document.getElementById('heroLabel').textContent = t.heroLabel;
-            document.getElementById('heroTitle').innerHTML = t.heroTitle;
-            document.getElementById('heroSubtitle').textContent = t.heroSubtitle;
-            document.getElementById('btnProducts').textContent = t.btnProducts;
-            document.getElementById('btnCOA').textContent = t.btnCOA;
+            setTextContent('heroLabel', t.heroLabel);
+            setInnerHTML('heroTitle', t.heroTitle);
+            setTextContent('heroSubtitle', t.heroSubtitle);
+            setTextContent('btnProducts', t.btnProducts);
+            setTextContent('btnCOA', t.btnCOA);
             
-            document.getElementById('productsLabel').textContent = t.productsLabel;
-            document.getElementById('productsTitle').textContent = t.productsTitle;
-            document.getElementById('productsDesc').textContent = t.productsDesc;
+            setTextContent('productsLabel', t.productsLabel);
+            setTextContent('productsTitle', t.productsTitle);
+            setTextContent('productsDesc', t.productsDesc);
             
-            document.getElementById('bpc157Desc').textContent = t.bpc157Desc;
-            document.getElementById('cjc1295Desc').textContent = t.cjc1295Desc;
-            if (document.getElementById('cpcDesc')) document.getElementById('cpcDesc').textContent = t.cpcDesc;
-            if (document.getElementById('ghkcuDesc')) document.getElementById('ghkcuDesc').textContent = t.ghkcuDesc;
-            if (document.getElementById('glowDesc')) document.getElementById('glowDesc').textContent = t.glowDesc;
-            if (document.getElementById('glpDesc')) document.getElementById('glpDesc').textContent = t.glpDesc;
-            if (document.getElementById('ipamorelinDesc')) document.getElementById('ipamorelinDesc').textContent = t.ipamorelinDesc;
-            if (document.getElementById('tesDesc')) document.getElementById('tesDesc').textContent = t.tesDesc;
+            setTextContent('bpc157Desc', t.bpc157Desc);
+            setTextContent('cjc1295Desc', t.cjc1295Desc);
+            setTextContent('cpcDesc', t.cpcDesc);
+            setTextContent('ghkcuDesc', t.ghkcuDesc);
+            setTextContent('glowDesc', t.glowDesc);
+            setTextContent('glpDesc', t.glpDesc);
+            setTextContent('ipamorelinDesc', t.ipamorelinDesc);
+            setTextContent('tesDesc', t.tesDesc);
             
             const buyBtns = document.querySelectorAll('.btn-add-cart');
             buyBtns.forEach(btn => btn.textContent = t.btnBuy);
@@ -5804,37 +5820,37 @@ The Evo Labs Research UG team
             const disclaimers = document.querySelectorAll('.product-disclaimer');
             disclaimers.forEach(d => d.textContent = t.disclaimer);
             
-            document.getElementById('qualityLabel').textContent = t.qualityLabel;
-            document.getElementById('qualityTitle').textContent = t.qualityTitle;
-            document.getElementById('qualityDesc').textContent = t.qualityDesc;
-            document.getElementById('feature1Title').textContent = t.feature1Title;
-            document.getElementById('feature1Text').textContent = t.feature1Text;
-            document.getElementById('feature2Title').textContent = t.feature2Title;
-            document.getElementById('feature2Text').textContent = t.feature2Text;
-            document.getElementById('feature3Title').textContent = t.feature3Title;
-            document.getElementById('feature3Text').textContent = t.feature3Text;
+            setTextContent('qualityLabel', t.qualityLabel);
+            setTextContent('qualityTitle', t.qualityTitle);
+            setTextContent('qualityDesc', t.qualityDesc);
+            setTextContent('feature1Title', t.feature1Title);
+            setTextContent('feature1Text', t.feature1Text);
+            setTextContent('feature2Title', t.feature2Title);
+            setTextContent('feature2Text', t.feature2Text);
+            setTextContent('feature3Title', t.feature3Title);
+            setTextContent('feature3Text', t.feature3Text);
             
-            document.getElementById('coaLabel').textContent = t.coaLabel;
-            document.getElementById('coaTitle').textContent = t.coaTitle;
-            document.getElementById('coaText').textContent = t.coaText;
-            document.getElementById('coaBtn').textContent = t.coaBtn;
+            setTextContent('coaLabel', t.coaLabel);
+            setTextContent('coaTitle', t.coaTitle);
+            setTextContent('coaText', t.coaText);
+            setTextContent('coaBtn', t.coaBtn);
             
-            document.getElementById('aboutLabel').textContent = t.aboutLabel;
-            document.getElementById('aboutTitle').textContent = t.aboutTitle;
-            document.getElementById('aboutText').textContent = t.aboutText;
+            setTextContent('aboutLabel', t.aboutLabel);
+            setTextContent('aboutTitle', t.aboutTitle);
+            setTextContent('aboutText', t.aboutText);
             
-            document.getElementById('contactLabel').textContent = t.contactLabel;
-            document.getElementById('contactTitle').textContent = t.contactTitle;
+            setTextContent('contactLabel', t.contactLabel);
+            setTextContent('contactTitle', t.contactTitle);
             
-            document.getElementById('footerLinks').textContent = t.footerLinks;
-            document.getElementById('footerLegal').textContent = t.footerLegal;
-            document.getElementById('footerTerms').textContent = t.footerTerms;
-            document.getElementById('footerPrivacy').textContent = t.footerPrivacy;
-            document.getElementById('footerCookies').textContent = t.footerCookies;
-            document.getElementById('footerInfoTitle').textContent = t.footerInfoTitle;
-            document.getElementById('footerInfo1').textContent = t.footerInfo1;
-            document.getElementById('footerInfo2').textContent = t.footerInfo2;
-            document.getElementById('footerInfo3').textContent = t.footerInfo3;
+            setTextContent('footerLinks', t.footerLinks);
+            setTextContent('footerLegal', t.footerLegal);
+            setTextContent('footerTerms', t.footerTerms);
+            setTextContent('footerPrivacy', t.footerPrivacy);
+            setTextContent('footerCookies', t.footerCookies);
+            setTextContent('footerInfoTitle', t.footerInfoTitle);
+            setTextContent('footerInfo1', t.footerInfo1);
+            setTextContent('footerInfo2', t.footerInfo2);
+            setTextContent('footerInfo3', t.footerInfo3);
             
             // Footer lab section
             const footerLabTitle = document.getElementById('footerLabTitle');
@@ -5846,47 +5862,49 @@ The Evo Labs Research UG team
             if (footerLabLocation) footerLabLocation.textContent = t.footerLabLocation;
             if (footerCopyright) footerCopyright.textContent = t.footerCopyright;
             
-            document.getElementById('disclaimerTitle').textContent = t.disclaimerTitle;
-            document.getElementById('disclaimerText').textContent = t.disclaimerText;
-            document.getElementById('fixedDisclaimer').textContent = t.fixedDisclaimer;
+            setTextContent('disclaimerTitle', t.disclaimerTitle);
+            setTextContent('disclaimerText', t.disclaimerText);
+            setTextContent('fixedDisclaimer', t.fixedDisclaimer);
             
             // COA Popup translations
-            const coaPopupTitle = document.getElementById('coaPopupTitle');
-            const coaPopupCloseBtn = document.getElementById('coaPopupCloseBtn');
-            if (coaPopupTitle) coaPopupTitle.textContent = t.coaPopupTitle;
-            if (coaPopupCloseBtn) coaPopupCloseBtn.textContent = t.btnClose;
+            setTextContent('coaPopupTitle', t.coaPopupTitle);
+            setTextContent('coaPopupCloseBtn', t.btnClose);
             
             // Modal translations
-            document.getElementById('modalBadge').textContent = t.modalBadge;
-            document.getElementById('modalTax').innerHTML = t.modalTax;
-            document.getElementById('modalSizeLabel').textContent = t.modalSizeLabel;
-            document.getElementById('modalQtyLabel').textContent = t.modalQtyLabel;
-            document.getElementById('modalAddToCartBtn').textContent = t.modalAddToCart;
-            document.getElementById('modalMorePayment').textContent = t.modalMorePayment;
+            setTextContent('modalBadge', t.modalBadge);
+            setInnerHTML('modalTax', t.modalTax);
+            setTextContent('modalSizeLabel', t.modalSizeLabel);
+            setTextContent('modalQtyLabel', t.modalQtyLabel);
+            setTextContent('modalAddToCartBtn', t.modalAddToCart);
+            setTextContent('modalMorePayment', t.modalMorePayment);
             
             // Update cart translations
             updateCartUI();
             
             // Update search translations
-            document.getElementById('searchTitle').textContent = t.searchTitle;
-            document.getElementById('searchInput').placeholder = t.searchPlaceholder;
+            setTextContent('searchTitle', t.searchTitle);
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) searchInput.placeholder = t.searchPlaceholder;
             
             // Update account translations
-            document.getElementById('accountModalTitle').querySelector('span').textContent = t.accountModalTitle;
-            document.getElementById('accountModalSubtitle').textContent = t.accountModalSubtitle;
-            document.getElementById('tabLogin').textContent = t.tabLogin;
-            document.getElementById('tabRegister').textContent = t.tabRegister;
-            document.getElementById('labelLoginEmail').textContent = t.labelLoginEmail;
-            document.getElementById('labelLoginPassword').textContent = t.labelLoginPassword;
-            document.getElementById('btnLogin').textContent = t.btnLogin;
-            document.getElementById('labelFirstName').textContent = t.labelFirstName;
-            document.getElementById('labelLastName').textContent = t.labelLastName;
-            document.getElementById('labelRegisterEmail').textContent = t.labelRegisterEmail;
-            document.getElementById('labelRegisterPassword').textContent = t.labelRegisterPassword;
-            document.getElementById('labelPhone').textContent = t.labelPhone;
-            document.getElementById('btnRegister').textContent = t.btnRegister;
-            document.getElementById('accountOr').textContent = t.accountOr;
-            document.getElementById('btnGuest').textContent = t.btnGuest;
+            const accountModalTitle = document.getElementById('accountModalTitle');
+            if (accountModalTitle && accountModalTitle.querySelector('span')) {
+                accountModalTitle.querySelector('span').textContent = t.accountModalTitle;
+            }
+            setTextContent('accountModalSubtitle', t.accountModalSubtitle);
+            setTextContent('tabLogin', t.tabLogin);
+            setTextContent('tabRegister', t.tabRegister);
+            setTextContent('labelLoginEmail', t.labelLoginEmail);
+            setTextContent('labelLoginPassword', t.labelLoginPassword);
+            setTextContent('btnLogin', t.btnLogin);
+            setTextContent('labelFirstName', t.labelFirstName);
+            setTextContent('labelLastName', t.labelLastName);
+            setTextContent('labelRegisterEmail', t.labelRegisterEmail);
+            setTextContent('labelRegisterPassword', t.labelRegisterPassword);
+            setTextContent('labelPhone', t.labelPhone);
+            setTextContent('btnRegister', t.btnRegister);
+            setTextContent('accountOr', t.accountOr);
+            setTextContent('btnGuest', t.btnGuest);
             
             // Update nav icons titles
             const navAccountTitle = document.getElementById('navAccountTitle');
@@ -5897,45 +5915,55 @@ The Evo Labs Research UG team
             if (navCartTitle) navCartTitle.setAttribute('title', t.navCartTitle);
             
             // Update dashboard translations
-            document.getElementById('dashboardTitle').querySelector('span').textContent = t.dashboardTitle;
-            document.getElementById('dashboardTabProfile').textContent = t.dashboardTabProfile;
-            document.getElementById('dashboardTabOrders').textContent = t.dashboardTabOrders;
-            document.getElementById('dashboardTabLogout').textContent = t.dashboardTabLogout;
-            document.getElementById('profileSectionTitle').textContent = t.profileSectionTitle;
-            document.getElementById('labelProfileFirstName').textContent = t.labelProfileFirstName;
-            document.getElementById('labelProfileLastName').textContent = t.labelProfileLastName;
-            document.getElementById('labelProfileEmail').textContent = t.labelProfileEmail;
-            document.getElementById('labelProfilePhone').textContent = t.labelProfilePhone;
-            document.getElementById('profileAddressTitle').textContent = t.profileAddressTitle;
-            document.getElementById('labelProfileAddress').textContent = t.labelProfileAddress;
-            document.getElementById('labelProfileAddress2').textContent = t.labelProfileAddress2;
-            document.getElementById('labelProfileCity').textContent = t.labelProfileCity;
-            document.getElementById('labelProfilePostal').textContent = t.labelProfilePostal;
-            document.getElementById('labelProfileCountry').textContent = t.labelProfileCountry;
-            document.getElementById('btnSaveProfile').textContent = t.btnSaveProfile;
-            document.getElementById('ordersSectionTitle').textContent = t.ordersSectionTitle;
-            document.getElementById('ordersEmptyText').textContent = t.ordersEmptyText;
+            const dashboardTitle = document.getElementById('dashboardTitle');
+            if (dashboardTitle && dashboardTitle.querySelector('span')) {
+                dashboardTitle.querySelector('span').textContent = t.dashboardTitle;
+            }
+            setTextContent('dashboardTabProfile', t.dashboardTabProfile);
+            setTextContent('dashboardTabOrders', t.dashboardTabOrders);
+            setTextContent('dashboardTabLogout', t.dashboardTabLogout);
+            setTextContent('profileSectionTitle', t.profileSectionTitle);
+            setTextContent('labelProfileFirstName', t.labelProfileFirstName);
+            setTextContent('labelProfileLastName', t.labelProfileLastName);
+            setTextContent('labelProfileEmail', t.labelProfileEmail);
+            setTextContent('labelProfilePhone', t.labelProfilePhone);
+            setTextContent('profileAddressTitle', t.profileAddressTitle);
+            setTextContent('labelProfileAddress', t.labelProfileAddress);
+            setTextContent('labelProfileAddress2', t.labelProfileAddress2);
+            setTextContent('labelProfileCity', t.labelProfileCity);
+            setTextContent('labelProfilePostal', t.labelProfilePostal);
+            setTextContent('labelProfileCountry', t.labelProfileCountry);
+            setTextContent('btnSaveProfile', t.btnSaveProfile);
+            setTextContent('ordersSectionTitle', t.ordersSectionTitle);
+            setTextContent('ordersEmptyText', t.ordersEmptyText);
             
             // Update checkout translations
-            document.getElementById('checkoutTitle').querySelector('span').textContent = t.checkoutTitle;
-            document.getElementById('checkoutPersonalTitle').textContent = t.checkoutPersonalTitle;
-            document.getElementById('labelCheckoutFirstName').textContent = t.labelCheckoutFirstName;
-            document.getElementById('labelCheckoutLastName').textContent = t.labelCheckoutLastName;
-            document.getElementById('labelCheckoutEmail').textContent = t.labelCheckoutEmail;
-            document.getElementById('labelCheckoutPhone').textContent = t.labelCheckoutPhone;
-            document.getElementById('checkoutShippingTitle').textContent = t.checkoutShippingTitle;
-            document.getElementById('labelCheckoutAddress').textContent = t.labelCheckoutAddress;
-            document.getElementById('labelCheckoutAddress2').textContent = t.labelCheckoutAddress2;
-            document.getElementById('labelCheckoutCity').textContent = t.labelCheckoutCity;
-            document.getElementById('labelCheckoutPostal').textContent = t.labelCheckoutPostal;
-            document.getElementById('labelCheckoutCountry').textContent = t.labelCheckoutCountry;
-            document.getElementById('checkoutSummaryTitle').textContent = t.checkoutSummaryTitle;
-            document.getElementById('checkoutSubtotalLabel').textContent = t.checkoutSubtotalLabel;
-            document.getElementById('checkoutShippingLabel').textContent = t.checkoutShippingLabel;
-            document.getElementById('checkoutShippingValue').textContent = t.checkoutShippingValue;
-            document.getElementById('checkoutTotalLabel').textContent = t.checkoutTotalLabel;
-            document.getElementById('btnCheckoutBack').textContent = t.btnCheckoutBack;
-            document.getElementById('btnCheckoutPay').textContent = t.btnCheckoutPay;
+            const checkoutTitle = document.getElementById('checkoutTitle');
+            if (checkoutTitle && checkoutTitle.querySelector('span')) {
+                checkoutTitle.querySelector('span').textContent = t.checkoutTitle;
+            }
+            setTextContent('checkoutPersonalTitle', t.checkoutPersonalTitle);
+            setTextContent('labelCheckoutFirstName', t.labelCheckoutFirstName);
+            setTextContent('labelCheckoutLastName', t.labelCheckoutLastName);
+            setTextContent('labelCheckoutEmail', t.labelCheckoutEmail);
+            setTextContent('labelCheckoutPhone', t.labelCheckoutPhone);
+            setTextContent('checkoutShippingTitle', t.checkoutShippingTitle);
+            setTextContent('labelCheckoutAddress', t.labelCheckoutAddress);
+            setTextContent('labelCheckoutAddress2', t.labelCheckoutAddress2);
+            setTextContent('labelCheckoutCity', t.labelCheckoutCity);
+            setTextContent('labelCheckoutPostal', t.labelCheckoutPostal);
+            setTextContent('labelCheckoutCountry', t.labelCheckoutCountry);
+            setTextContent('checkoutSummaryTitle', t.checkoutSummaryTitle);
+            setTextContent('checkoutSubtotalLabel', t.checkoutSubtotalLabel);
+            setTextContent('checkoutShippingLabel', t.checkoutShippingLabel);
+            // checkoutShippingValue est mis à jour dynamiquement dans updateCheckoutSummary()
+            const checkoutShippingValue = document.getElementById('checkoutShippingValue');
+            if (checkoutShippingValue && !checkoutShippingValue.textContent.includes('€')) {
+                checkoutShippingValue.textContent = t.checkoutShippingValue;
+            }
+            setTextContent('checkoutTotalLabel', t.checkoutTotalLabel);
+            setTextContent('btnCheckoutBack', t.btnCheckoutBack);
+            setTextContent('btnCheckoutPay', t.btnCheckoutPay);
         }
 
         function buyProduct(productName) {
