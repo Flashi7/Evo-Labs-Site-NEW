@@ -5063,23 +5063,49 @@
                 });
 
                 if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
-                    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                    let errorData;
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        errorData = await response.json().catch(() => null);
+                    } else {
+                        const textError = await response.text().catch(() => 'Unknown error');
+                        errorData = { error: textError || 'Unknown error' };
+                    }
+                    
+                    const errorMessage = errorData?.error || errorData?.message || `HTTP error! status: ${response.status}`;
+                    console.error('Erreur API Stripe:', {
+                        status: response.status,
+                        statusText: response.statusText,
+                        errorData: errorData
+                    });
+                    throw new Error(errorMessage);
                 }
 
                 const session = await response.json();
                 return session;
             } catch (error) {
                 console.error('Erreur lors de la création de la session Stripe:', error);
+                console.error('Détails de l\'erreur:', {
+                    message: error.message,
+                    stack: error.stack,
+                    name: error.name
+                });
                 
                 // Message d'erreur plus détaillé
-                if (error.message.includes('fetch')) {
+                if (error.message.includes('fetch') || error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
                     throw new Error(currentLang === 'fr'
-                        ? 'Impossible de se connecter au serveur de paiement. Vérifiez votre connexion internet et réessayez.'
-                        : 'Unable to connect to payment server. Check your internet connection and try again.');
+                        ? 'Impossible de se connecter au serveur de paiement. Vérifiez votre connexion internet et réessayez. Si le problème persiste, vérifiez que l\'API est bien déployée.'
+                        : 'Unable to connect to payment server. Check your internet connection and try again. If the problem persists, verify that the API is properly deployed.');
                 }
                 
-                throw error;
+                // Si c'est une erreur API, propager le message
+                if (error.message) {
+                    throw error;
+                }
+                
+                throw new Error(currentLang === 'fr'
+                    ? `Erreur lors de la création de la session de paiement: ${error.message || 'Erreur inconnue'}`
+                    : `Error creating payment session: ${error.message || 'Unknown error'}`);
             }
         }
 
@@ -5299,6 +5325,11 @@ The Evo Labs Research UG team
                 }
             } catch (error) {
                 console.error('Erreur lors du checkout:', error);
+                console.error('Détails complets:', {
+                    message: error.message,
+                    stack: error.stack,
+                    name: error.name
+                });
                 
                 // Retirer la commande en attente en cas d'erreur
                 const pendingOrders = JSON.parse(localStorage.getItem('evo_labs_pending_orders') || '[]');
@@ -5307,11 +5338,27 @@ The Evo Labs Research UG team
                     localStorage.setItem('evo_labs_pending_orders', JSON.stringify(pendingOrders));
                 }
 
-                const errorMessage = error.message || (currentLang === 'fr'
+                // Message d'erreur plus détaillé
+                let errorMessage = error.message || (currentLang === 'fr'
                     ? 'Erreur lors du traitement du paiement. Veuillez réessayer.'
                     : 'Error processing payment. Please try again.');
+                
+                // Améliorer les messages d'erreur spécifiques
+                if (errorMessage.includes('Stripe secret key is not configured')) {
+                    errorMessage = currentLang === 'fr'
+                        ? 'Erreur: La clé secrète Stripe n\'est pas configurée. Vérifiez les variables d\'environnement dans Vercel.'
+                        : 'Error: Stripe secret key is not configured. Check environment variables in Vercel.';
+                } else if (errorMessage.includes('404') || errorMessage.includes('Not Found')) {
+                    errorMessage = currentLang === 'fr'
+                        ? 'Erreur: L\'API de paiement n\'est pas trouvée. Vérifiez que les fichiers API sont bien déployés sur Vercel.'
+                        : 'Error: Payment API not found. Verify that API files are properly deployed on Vercel.';
+                } else if (errorMessage.includes('500')) {
+                    errorMessage = currentLang === 'fr'
+                        ? 'Erreur serveur: Vérifiez les logs Vercel pour plus de détails. La clé secrète Stripe est peut-être incorrecte.'
+                        : 'Server error: Check Vercel logs for details. Stripe secret key might be incorrect.';
+                }
 
-                showNotification(errorMessage, 'error', 5000);
+                showNotification(errorMessage, 'error', 8000);
                 
                 payButton.disabled = false;
                 payButton.textContent = originalButtonText;
