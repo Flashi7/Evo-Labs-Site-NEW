@@ -5580,7 +5580,12 @@
         // EMAILJS CONFIGURATION
         // Initialisation EmailJS avec votre clé publique
         (function(){
-            emailjs.init("7eqj2mK9qj1RaWlHq");
+            if (typeof emailjs !== 'undefined') {
+                emailjs.init("7eqj2mK9qj1RaWlHq");
+                console.log('✅ EmailJS initialisé avec succès');
+            } else {
+                console.error('❌ EmailJS n\'est pas chargé. Vérifiez que le script est inclus dans le HTML.');
+            }
         })();
 
         // BANNER ROTATION SYSTEM
@@ -6423,7 +6428,19 @@ Best regards,
 The Evo Labs Research UG team
                 `.trim();
 
-                await emailjs.send(
+                // Vérifier que EmailJS est initialisé
+                if (typeof emailjs === 'undefined') {
+                    console.error('EmailJS n\'est pas chargé');
+                    return false;
+                }
+
+                console.log('Envoi de l\'email de confirmation...', {
+                    to_email: orderData.customer.email,
+                    to_name: `${orderData.customer.firstName} ${orderData.customer.lastName}`,
+                    orderId: orderData.orderId
+                });
+
+                const emailResult = await emailjs.send(
                     'service_dlxoage',
                     'template_i0akca4',
                     {
@@ -6436,10 +6453,18 @@ The Evo Labs Research UG team
                     }
                 );
 
-                console.log('Email de confirmation envoyé avec succès');
+                console.log('✅ Email de confirmation envoyé avec succès:', emailResult);
+                console.log('📧 Email envoyé à:', orderData.customer.email);
                 return true;
             } catch (error) {
-                console.error('Erreur lors de l\'envoi de l\'email:', error);
+                console.error('❌ Erreur lors de l\'envoi de l\'email:', error);
+                console.error('Détails de l\'erreur:', {
+                    message: error.message,
+                    text: error.text,
+                    status: error.status,
+                    orderId: orderData?.orderId,
+                    customerEmail: orderData?.customer?.email
+                });
                 // Ne pas bloquer le processus si l'email échoue
                 return false;
             }
