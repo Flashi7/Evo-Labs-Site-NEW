@@ -5551,6 +5551,16 @@ The Evo Labs Research UG team
                 // Vider le panier
                 cart = [];
                 saveCart();
+                
+                // Fermer les modals
+                const checkoutModal = document.getElementById('checkoutModal');
+                const cartModal = document.getElementById('cartModal');
+                if (checkoutModal) checkoutModal.classList.remove('active');
+                if (cartModal) cartModal.classList.remove('active');
+                const cartOverlay = document.getElementById('cartOverlay');
+                if (cartOverlay) cartOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+                
                 // Mettre à jour l'UI du panier si la fonction existe
                 try {
                     if (typeof updateCartUI === 'function') {
