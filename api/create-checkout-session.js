@@ -31,7 +31,9 @@ module.exports = async (req, res) => {
         }
 
         const subtotal = items.reduce((sum, item) => sum + (item.amount * item.quantity), 0);
-        const shippingAmount = 499; // 4,99€ frais de livraison standard (en centimes)
+        const FREE_SHIPPING_THRESHOLD = 9000; // 90€ en centimes
+        // Calculer les frais de livraison (gratuit si >= 90€)
+        const shippingAmount = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : 499; // 4,99€ frais de livraison standard (en centimes)
 
         const lineItems = items.map(item => ({
             price_data: {
@@ -45,7 +47,7 @@ module.exports = async (req, res) => {
             quantity: item.quantity,
         }));
 
-        // Ajouter les frais de livraison (4,99€)
+        // Ajouter les frais de livraison (4,99€) uniquement si nécessaire
         if (shippingAmount > 0) {
             lineItems.push({
                 price_data: {

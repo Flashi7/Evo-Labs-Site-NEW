@@ -5894,7 +5894,6 @@
             // Calculate totals
             const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             const FREE_SHIPPING_THRESHOLD = 90;
-            const shippingCost = 4.99; // Frais de livraison standard
 
             // Apply promo code discount (99% off)
             let discountAmount = 0;
@@ -5903,6 +5902,9 @@
                 discountAmount = subtotal * appliedPromoCode.discount;
                 finalSubtotal = subtotal - discountAmount;
             }
+
+            // Calculer les frais de livraison (gratuit si >= 90€)
+            const shippingCost = finalSubtotal >= FREE_SHIPPING_THRESHOLD ? 0 : 4.99;
 
             const total = finalSubtotal + shippingCost;
 
@@ -5919,7 +5921,14 @@
             }
             
             // Update shipping display
-            shippingValue.textContent = `${shippingCost.toFixed(2).replace('.', ',')} €`;
+            const checkoutShippingValue = document.getElementById('checkoutShippingValue');
+            if (shippingCost === 0) {
+                shippingValue.textContent = 'Gratuite';
+                if (checkoutShippingValue) checkoutShippingValue.textContent = 'Gratuite';
+            } else {
+                shippingValue.textContent = `${shippingCost.toFixed(2).replace('.', ',')} €`;
+                if (checkoutShippingValue) checkoutShippingValue.textContent = `${shippingCost.toFixed(2).replace('.', ',')} €`;
+            }
             
             totalValue.textContent = `${total.toFixed(2).replace('.', ',')} €`;
         }
@@ -6164,7 +6173,7 @@ The Evo Labs Research UG team
 
                 // Calculate totals with shipping and promo code
                 const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                const shippingCost = 4.99; // Frais de livraison standard
+                const FREE_SHIPPING_THRESHOLD = 90;
                 
                 // Apply promo code discount
                 let discountAmount = 0;
@@ -6175,6 +6184,9 @@ The Evo Labs Research UG team
                     finalSubtotal = subtotal - discountAmount;
                     promoCode = Object.keys(PROMO_CODES).find(key => PROMO_CODES[key] === appliedPromoCode);
                 }
+                
+                // Calculer les frais de livraison (gratuit si >= 90€)
+                const shippingCost = finalSubtotal >= FREE_SHIPPING_THRESHOLD ? 0 : 4.99;
                 
                 const total = finalSubtotal + shippingCost;
 
