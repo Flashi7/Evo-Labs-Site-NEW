@@ -1968,8 +1968,14 @@
         .modal-details {
             display: flex;
             flex-direction: column;
-            gap: 2.5rem;
+            gap: 2rem;
             justify-content: space-between;
+        }
+
+        @media (max-width: 968px) {
+            .modal-details {
+                gap: 1.5rem;
+            }
         }
 
         .modal-badge {
