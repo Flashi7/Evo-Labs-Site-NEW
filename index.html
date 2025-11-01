@@ -5579,14 +5579,34 @@
         
         // EMAILJS CONFIGURATION
         // Initialisation EmailJS avec votre clé publique
-        (function(){
+        function initEmailJS() {
             if (typeof emailjs !== 'undefined') {
-                emailjs.init("7eqj2mK9qj1RaWlHq");
-                console.log('✅ EmailJS initialisé avec succès');
+                try {
+                    emailjs.init("7eqj2mK9qj1RaWlHq");
+                    console.log('✅ EmailJS initialisé avec succès');
+                    return true;
+                } catch (error) {
+                    console.error('❌ Erreur lors de l\'initialisation EmailJS:', error);
+                    return false;
+                }
             } else {
                 console.error('❌ EmailJS n\'est pas chargé. Vérifiez que le script est inclus dans le HTML.');
+                return false;
             }
-        })();
+        }
+
+        // Essayer d'initialiser immédiatement
+        initEmailJS();
+
+        // Réessayer après le chargement du DOM
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                initEmailJS();
+            });
+        } else {
+            // DOM déjà chargé
+            initEmailJS();
+        }
 
         // BANNER ROTATION SYSTEM
         let currentBannerIndex = 0;
@@ -6428,9 +6448,19 @@ Best regards,
 The Evo Labs Research UG team
                 `.trim();
 
-                // Vérifier que EmailJS est initialisé
+                // Vérifier que EmailJS est initialisé et réinitialiser si nécessaire
                 if (typeof emailjs === 'undefined') {
-                    console.error('EmailJS n\'est pas chargé');
+                    console.error('❌ EmailJS n\'est pas chargé. Tentative de réinitialisation...');
+                    initEmailJS();
+                    if (typeof emailjs === 'undefined') {
+                        console.error('❌ Impossible d\'initialiser EmailJS');
+                        return false;
+                    }
+                }
+
+                // Vérifier que les données nécessaires sont présentes
+                if (!orderData || !orderData.customer || !orderData.customer.email) {
+                    console.error('❌ Données de commande manquantes pour l\'envoi de l\'email:', orderData);
                     return false;
                 }
 
