@@ -3621,6 +3621,11 @@
                 overflow-y: auto;
                 overflow-x: hidden;
                 -webkit-overflow-scrolling: touch;
+                transition: right 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            }
+
+            .cart-modal.active {
+                right: 0;
             }
 
             .cart-overlay {
@@ -3631,6 +3636,16 @@
                 height: 100vh;
                 height: -webkit-fill-available;
                 z-index: 10001;
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+                pointer-events: none;
+            }
+
+            .cart-overlay.active {
+                opacity: 1;
+                visibility: visible;
+                pointer-events: auto;
             }
 
             .cart-header {
@@ -3649,11 +3664,24 @@
             .cart-close {
                 font-size: 1.5rem;
                 padding: 0.3rem;
-                min-width: 36px;
-                min-height: 36px;
+                min-width: 44px;
+                min-height: 44px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                cursor: pointer;
+                z-index: 10003;
+                position: relative;
+                background: transparent;
+                border: none;
+                color: var(--gray);
+                transition: all 0.3s ease;
+            }
+
+            .cart-close:hover,
+            .cart-close:active {
+                color: var(--primary);
+                transform: rotate(90deg);
             }
 
             .cart-content {
