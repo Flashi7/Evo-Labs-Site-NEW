@@ -6718,12 +6718,21 @@ The Evo Labs Research UG team
                 }
 
                 // Envoyer l'email de confirmation
+                console.log('📧 Tentative d\'envoi de l\'email de confirmation...');
                 const emailSent = await sendOrderConfirmationEmail(orderData);
                 
                 if (emailSent) {
-                    console.log('Commande confirmée et email envoyé avec succès');
+                    console.log('✅ Commande confirmée et email envoyé avec succès');
                 } else {
-                    console.warn('Commande confirmée mais email non envoyé');
+                    console.warn('⚠️ Commande confirmée mais email non envoyé. Vérifiez la configuration EmailJS.');
+                    // Afficher un message d'avertissement à l'utilisateur
+                    showNotification(
+                        currentLang === 'fr'
+                            ? '⚠️ Commande confirmée mais l\'email de confirmation n\'a pas pu être envoyé. Vérifiez votre email ou contactez le support.'
+                            : '⚠️ Order confirmed but confirmation email could not be sent. Please check your email or contact support.',
+                        'warning',
+                        10000
+                    );
                 }
 
                 // Afficher une notification de succès
