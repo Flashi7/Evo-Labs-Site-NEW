@@ -3622,10 +3622,14 @@
                 overflow-x: hidden;
                 -webkit-overflow-scrolling: touch;
                 transition: right 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                visibility: hidden;
+                opacity: 0;
             }
 
             .cart-modal.active {
                 right: 0;
+                visibility: visible;
+                opacity: 1;
             }
 
             .cart-overlay {
@@ -6863,6 +6867,16 @@ The Evo Labs Research UG team
 
         // Initialize
         window.addEventListener('DOMContentLoaded', function() {
+            // S'assurer que le panier est fermé au chargement
+            const cartModal = document.getElementById('cartModal');
+            const cartOverlay = document.getElementById('cartOverlay');
+            if (cartModal) {
+                cartModal.classList.remove('active');
+            }
+            if (cartOverlay) {
+                cartOverlay.classList.remove('active');
+            }
+            document.body.style.overflow = 'auto';
             // Attendre que Stripe.js soit complètement chargé
             function initializeStripeAfterLoad() {
                 if (typeof Stripe !== 'undefined') {
