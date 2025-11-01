@@ -6259,7 +6259,8 @@
                         metadata: {
                             orderId: orderData.orderId,
                             customerEmail: orderData.customer.email,
-                            customerName: `${orderData.customer.firstName} ${orderData.customer.lastName}`
+                            customerName: `${orderData.customer.firstName} ${orderData.customer.lastName}`,
+                            promoCode: orderData.promoCode || null
                         },
                         successUrl: `${window.location.origin}${window.location.pathname}?session_id={CHECKOUT_SESSION_ID}`,
                         cancelUrl: `${window.location.origin}${window.location.pathname}`
