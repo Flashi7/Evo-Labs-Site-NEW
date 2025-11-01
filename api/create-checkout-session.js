@@ -32,8 +32,13 @@ module.exports = async (req, res) => {
 
         const subtotal = items.reduce((sum, item) => sum + (item.amount * item.quantity), 0);
         const FREE_SHIPPING_THRESHOLD = 9000; // 90€ en centimes
-        // Calculer les frais de livraison (gratuit si >= 90€)
-        const shippingAmount = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : 499; // 4,99€ frais de livraison standard (en centimes)
+        // Calculer les frais de livraison (gratuit si >= 90€ ou code promo TEST99)
+        let shippingAmount = 499; // 4,99€ frais de livraison standard (en centimes)
+        if (subtotal >= FREE_SHIPPING_THRESHOLD) {
+            shippingAmount = 0;
+        } else if (metadata?.promoCode === 'TEST99') {
+            shippingAmount = 0; // Livraison gratuite avec TEST99
+        }
 
         const lineItems = items.map(item => ({
             price_data: {
