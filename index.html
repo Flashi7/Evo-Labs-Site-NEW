@@ -5087,7 +5087,7 @@
             // Calculate totals
             const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             const FREE_SHIPPING_THRESHOLD = 90;
-            const shippingCost = 0.60; // 60 centimes pour les tests
+            const shippingCost = 4.99; // Frais de livraison standard
 
             // Apply promo code discount (99% off)
             let discountAmount = 0;
@@ -5237,7 +5237,7 @@
                     return `• ${item.quantity}x ${item.name}${item.size ? ` (${item.size})` : ''} - ${itemTotal} €`;
                 }).join('\n');
 
-                const shippingCost = orderData.total >= 90 ? 0 : 5;
+                const shippingCost = orderData.shippingCost || 4.99;
                 const subtotal = orderData.total - shippingCost;
 
                 const emailContent = currentLang === 'fr' ? `
@@ -5357,7 +5357,7 @@ The Evo Labs Research UG team
 
                 // Calculate totals with shipping and promo code
                 const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                const shippingCost = 0.60; // 60 centimes pour les tests
+                const shippingCost = 4.99; // Frais de livraison standard
                 
                 // Apply promo code discount
                 let discountAmount = 0;

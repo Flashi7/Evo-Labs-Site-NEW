@@ -31,7 +31,7 @@ module.exports = async (req, res) => {
         }
 
         const subtotal = items.reduce((sum, item) => sum + (item.amount * item.quantity), 0);
-        const shippingAmount = 60; // 60 centimes pour les tests (en centimes)
+        const shippingAmount = 499; // 4,99€ frais de livraison standard (en centimes)
 
         const lineItems = items.map(item => ({
             price_data: {
@@ -45,7 +45,7 @@ module.exports = async (req, res) => {
             quantity: item.quantity,
         }));
 
-        // Ajouter les frais de livraison (60 centimes)
+        // Ajouter les frais de livraison (4,99€)
         if (shippingAmount > 0) {
             lineItems.push({
                 price_data: {
