@@ -1888,12 +1888,21 @@
             margin: auto;
         }
 
+        .modal-left-column {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
         @media (max-width: 968px) {
             .modal-content {
                 grid-template-columns: 1fr;
                 max-width: 600px;
                 gap: 2rem;
                 padding: 2rem;
+            }
+            .modal-left-column {
+                gap: 1.5rem;
             }
         }
 
@@ -1946,22 +1955,22 @@
             align-items: center;
             justify-content: center;
             border: 1px solid rgba(29, 155, 240, 0.1);
-            max-height: 500px;
+            max-height: 450px;
         }
 
         .modal-image img {
             max-width: 100%;
-            max-height: 450px;
+            max-height: 400px;
             object-fit: contain;
             filter: drop-shadow(0 15px 35px rgba(29, 155, 240, 0.25));
         }
 
         @media (max-width: 968px) {
             .modal-image {
-                max-height: 400px;
+                max-height: 350px;
             }
             .modal-image img {
-                max-height: 350px;
+                max-height: 300px;
             }
         }
 
@@ -2199,23 +2208,22 @@
         }
 
         .modal-description {
-            padding-top: 2.5rem;
+            padding-top: 1.5rem;
             border-top: 1px solid rgba(29, 155, 240, 0.15);
-            margin-top: 1rem;
         }
 
         .modal-description h3 {
             color: var(--white);
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: 700;
-            margin-bottom: 1.2rem;
+            margin-bottom: 0.8rem;
         }
 
         .modal-description p {
-            color: rgba(255, 255, 255, 0.85);
-            line-height: 1.9;
-            font-size: 1.05rem;
-            margin-bottom: 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.7;
+            font-size: 0.95rem;
+            margin-bottom: 0;
         }
 
         .modal-description ul {
@@ -4147,8 +4155,14 @@
         <div class="modal-content">
             <div class="modal-close" onclick="closeProductModal()">×</div>
             
-            <div class="modal-image">
-                <img id="modalProductImage" src="" alt="Product">
+            <div class="modal-left-column">
+                <div class="modal-image">
+                    <img id="modalProductImage" src="" alt="Product">
+                </div>
+                <div class="modal-description">
+                    <h3 id="modalProductNameDesc">BPC-157</h3>
+                    <p id="modalProductDesc">A synthetic peptide derived from gastric proteins, researched for its potential regenerative and healing properties.</p>
+                </div>
             </div>
             
             <div class="modal-details">
@@ -4157,19 +4171,19 @@
                 <h1 class="modal-title" id="modalProductName">BPC-157</h1>
                 
                 <div class="modal-price">
-                    €<span id="modalProductPrice">39,99</span>
-                    <div class="modal-tax" id="modalTax">Taxes included. <a href="#shipping">Shipping</a> calculated at checkout.</div>
+                    <span id="modalProductPrice">39,99</span> €
+                    <div class="modal-tax" id="modalTax">Taxes incluses. <a href="#shipping">Livraison</a> calculée à la caisse.</div>
                 </div>
                 
                 <div class="size-selector">
-                    <label id="modalSizeLabel">Size</label>
+                    <label id="modalSizeLabel">Taille</label>
                     <div class="size-options">
                         <div class="size-option active" id="modalSize">10mg</div>
                     </div>
                 </div>
                 
                 <div class="quantity-selector">
-                    <label id="modalQtyLabel">Quantity</label>
+                    <label id="modalQtyLabel">Quantité</label>
                     <div class="quantity-controls">
                         <button class="qty-btn" onclick="decreaseQty()">−</button>
                         <input type="number" class="qty-input" id="qtyInput" value="1" min="1" max="99">
@@ -4179,14 +4193,6 @@
                 
                 <div class="modal-actions">
                     <button class="btn-add-to-cart" id="modalAddToCartBtn" onclick="addToCartFromModal()">Ajouter au panier</button>
-                </div>
-                
-                <div class="modal-description">
-                    <h3 id="modalProductNameDesc">BPC-157</h3>
-                    <p id="modalProductDesc">A synthetic peptide derived from gastric proteins, researched for its potential regenerative and healing properties.</p>
-                    <div class="modal-disclaimer">
-                        <strong>99% purity. 3rd party lab tested. For research purposes only. Not for human consumption.</strong>
-                    </div>
                 </div>
             </div>
         </div>
