@@ -4183,9 +4183,6 @@
             <div class="banner-message" id="bannerMessage2">
                 <span id="bannerMessage2Text">STOCK TRÈS LIMITÉ | VERY LIMITED STOCK</span>
             </div>
-            <div class="banner-message" id="bannerMessage3">
-                <span id="bannerMessage3Text">À USAGE DE RECHERCHE UNIQUEMENT | FOR RESEARCH USE ONLY</span>
-            </div>
         </div>
     </div>
 
@@ -5220,7 +5217,6 @@
                 topBanner: 'FREE SHIPPING OVER 90€ | LIVRAISON GRATUITE À PARTIR DE 90€',
                 bannerMessage1: 'FREE SHIPPING OVER 90€ | LIVRAISON GRATUITE À PARTIR DE 90€',
                 bannerMessage2: 'STOCK TRÈS LIMITÉ | VERY LIMITED STOCK',
-                bannerMessage3: 'À USAGE DE RECHERCHE UNIQUEMENT | FOR RESEARCH USE ONLY',
                 navHome: 'ACCUEIL',
                 navProducts: 'PRODUITS',
                 navCOA: 'CERTIFICATS',
@@ -5381,7 +5377,6 @@
                 topBanner: 'FREE SHIPPING OVER 90€ | LIVRAISON GRATUITE À PARTIR DE 90€',
                 bannerMessage1: 'FREE SHIPPING OVER 90€ | LIVRAISON GRATUITE À PARTIR DE 90€',
                 bannerMessage2: 'VERY LIMITED STOCK | STOCK TRÈS LIMITÉ',
-                bannerMessage3: 'FOR RESEARCH USE ONLY | À USAGE DE RECHERCHE UNIQUEMENT',
                 navHome: 'HOME',
                 navProducts: 'PRODUCTS',
                 navCOA: 'CERTIFICATES',
@@ -5609,7 +5604,7 @@
 
         // BANNER ROTATION SYSTEM
         let currentBannerIndex = 0;
-        const bannerMessages = ['bannerMessage1', 'bannerMessage2', 'bannerMessage3'];
+        const bannerMessages = ['bannerMessage1', 'bannerMessage2'];
         
         function rotateBanner() {
             // Remove active class from current message
@@ -7121,7 +7116,6 @@ The Evo Labs Research UG team
             // Update banner messages
             setTextContent('bannerMessage1Text', t.bannerMessage1);
             setTextContent('bannerMessage2Text', t.bannerMessage2);
-            setTextContent('bannerMessage3Text', t.bannerMessage3);
             setTextContent('navHome', t.navHome);
             setTextContent('navProducts', t.navProducts);
             setTextContent('navCOA', t.navCOA);
