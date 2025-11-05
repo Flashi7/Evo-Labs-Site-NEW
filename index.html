@@ -7324,7 +7324,7 @@ The Evo Labs Research UG team
             
             for (let card of productCards) {
                 const nameElement = card.querySelector('.product-name');
-                if (nameElement && (nameElement.textContent.trim() === searchName || nameElement.textContent.trim() === productName)) {
+                if (nameElement && (nameElement.textContent.trim() === searchName || nameElement.textContent.trim() === productName || nameElement.textContent.trim().includes('Retatrutide'))) {
                     const imgElement = card.querySelector('.product-icon img');
                     if (imgElement && imgElement.src) {
                         productImage = imgElement.src;
@@ -7338,6 +7338,16 @@ The Evo Labs Research UG team
                 const productData = productsData.find(p => p.name === searchName || p.name === productName);
                 if (productData && productData.image) {
                     productImage = productData.image;
+                }
+            }
+            
+            // Fallback explicite pour Retatrutide - utiliser l'image de productsData
+            if (!productImage && (productName === 'Retatrutide' || productName === 'GLP (Retatrutide)')) {
+                if (typeof productsData !== 'undefined') {
+                    const retatrutideData = productsData.find(p => p.name === 'GLP (Retatrutide)');
+                    if (retatrutideData && retatrutideData.image) {
+                        productImage = retatrutideData.image;
+                    }
                 }
             }
             
