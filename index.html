@@ -2819,22 +2819,6 @@
             font-size: 0.85rem;
         }
 
-        /* Fixed Disclaimer */
-        .fixed-disclaimer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--primary);
-            color: var(--darker);
-            text-align: center;
-            padding: 0.8rem;
-            font-weight: 700;
-            font-size: 0.8rem;
-            z-index: 999;
-            letter-spacing: 0.5px;
-        }
-
         @media (max-width: 768px) {
             h1 {
                 font-size: 2.5rem;
@@ -4090,11 +4074,6 @@
                 font-size: 0.8rem;
             }
 
-            /* Fixed Disclaimer mobile */
-            .fixed-disclaimer {
-                padding: 0.6rem;
-                font-size: 0.7rem;
-            }
         }
 
         @media (max-width: 480px) {
@@ -5310,10 +5289,6 @@
         </div>
     </footer>
 
-    <!-- Fixed Disclaimer -->
-    <div class="fixed-disclaimer">
-        <span id="fixedDisclaimer">⚠️ FOR RESEARCH USE ONLY | NON DESTINÉ À UN USAGE HUMAIN</span>
-    </div>
 
     <!-- Product Detail Modal -->
     <div class="product-modal" id="productModal">
@@ -7351,8 +7326,6 @@ The Evo Labs Research UG team
             
             setTextContent('disclaimerTitle', t.disclaimerTitle);
             setTextContent('disclaimerText', t.disclaimerText);
-            setTextContent('fixedDisclaimer', t.fixedDisclaimer);
-            
             // COA Popup translations
             setTextContent('coaPopupTitle', t.coaPopupTitle);
             setTextContent('coaPopupCloseBtn', t.btnClose);
