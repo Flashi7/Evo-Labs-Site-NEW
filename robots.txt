@@ -1,0 +1,14 @@
+# robots.txt for Evo Labs Research
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://evolabs.com/sitemap.xml
+
+# Disallow API endpoints from being indexed
+Disallow: /api/
+
+# Allow all other pages
+Allow: /
+
+
