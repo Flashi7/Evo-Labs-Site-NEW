@@ -6253,8 +6253,11 @@
 
         // Variable globale pour le code promo
         let appliedPromoCode = null;
+        const promoCodeRalph10 = { discount: 0.10, label: 'RALPH10' };
         const PROMO_CODES = {
-            'TEST99': { discount: 0.99, label: 'TEST99' } // 99% de réduction
+            'TEST99': { discount: 0.99, label: 'TEST99' }, // 99% de réduction
+            'RALPH10': promoCodeRalph10,
+            'ralph10': promoCodeRalph10
         };
 
         function closeCheckout() {
